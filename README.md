@@ -1,6 +1,6 @@
 # Slime Mould Algorithm
 
-Group member: Viet, Matthias, Faeze
+Group member: Ugly-Viet, Matthias, Faeze
 
 
 
