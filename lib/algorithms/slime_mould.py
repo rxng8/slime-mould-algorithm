@@ -5,15 +5,12 @@ from typing import List, Dict, Tuple, Callable, Sequence, Any
 import numpy as np
 
 from lib.types import MetricsType
+from lib.utils import get_initializer
 
-def get_initializer(name: str) -> Callable:
-  return {
-    "normal": lambda pop_size, dim: np.random.normal((pop_size, dim)),
-    "zeros": lambda pop_size, dim: np.zeros((pop_size, dim)),
-  }[name]
 
 class SlimeMould:
   def __init__(self, config) -> None:
+    np.random.seed(config.seed)
     self.config = config
     initializer: Callable = get_initializer(config.initializer) # E.g., config.initializer = "zeros"
     self.X = initializer(config.pop_size, config.dim)

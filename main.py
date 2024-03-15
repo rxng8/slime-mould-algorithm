@@ -11,7 +11,8 @@ from lib.algorithms import SlimeMould
 config = Config(
   pop_size = 100,
   dim = 2,
-  initializer = "normal"
+  initializer = "normal",
+  seed = 1990,
 )
 config = config.update(pop_size=50)
 print(config)
