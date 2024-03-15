@@ -19,5 +19,4 @@ print(config)
 
 S = SlimeMould(config)
 
-
-
+# to make sure this code is safe  ha ha
