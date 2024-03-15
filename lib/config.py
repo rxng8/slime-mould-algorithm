@@ -65,7 +65,7 @@ class Config(dict):
     return type(self)(result)
 
   def __str__(self):
-    lines = ['\nConfig:']
+    lines = ['Config:']
     keys, vals, typs = [], [], []
     for key, val in self.items():
       keys.append(key + ':')
@@ -78,6 +78,9 @@ class Config(dict):
       val = val.ljust(max_val)
       lines.append(f'{key}  {val}  ({typ})')
     return '\n'.join(lines)
+
+  def __repr__(self) -> str:
+    return self.__str__()
 
 
 ## Example

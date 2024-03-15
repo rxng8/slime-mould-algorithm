@@ -12,7 +12,12 @@ class SlimeMould:
     self.objective_fn = objective_fn
 
   def __fitness(self, X):
-    return self.objective_fn(X) # (B, 1)
+    # This algorithm is defaulted to maximizing the objective function
+    minimizing = self.config.get("minimizing", False)
+    if minimizing:
+      return -self.objective_fn(X) # (B, 1)
+    else:
+      return self.objective_fn(X)
 
   def __sort_slime_mould(self, X, F):
     # X: (B, D); F: (B, 1)
