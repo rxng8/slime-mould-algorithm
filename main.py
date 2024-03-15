@@ -6,18 +6,16 @@ import numpy as np
 
 from lib import Config
 from lib.types import MetricsType
+from lib.benchmarks import Ackley
 from lib.algorithms import SlimeMould
 
 config = Config(
   pop_size = 100,
-  dim = 2,
-  initializer = "normal"
+  dim = 10,
+  max_iters = 20
 )
-config = config.update(pop_size=50)
 print(config)
-
-
-S = SlimeMould(config)
-
+S = SlimeMould(lambda x: -Ackley(x), config)
+S.run()
 
 
