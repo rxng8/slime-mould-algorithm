@@ -1,6 +1,8 @@
 # %%
 
 import numpy as np
+import matplotlib.pyplot as plt
+import argparse
 
 def negative_Alpine(x: np.ndarray) -> np.ndarray:
   """Return the negative Alpine function
@@ -44,3 +46,48 @@ def Ackley(x: np.ndarray) -> np.ndarray: # returns a scalar
   return a - b + 20 + np.e
 
 
+def plot_func(f, name:str="function") -> None:
+    """Creates a visula of a objectve function using matplotlib.
+    Args:
+        f (function): The objective function.
+        name (str, optional): The title of the plot. Defaults to "function".
+    """
+    x = np.linspace(-5, 5, 100)
+    y = np.linspace(-5, 5, 100)
+    X, Y = np.meshgrid(x, y)
+    fn = np.zeros(X.shape)
+
+    for i in range(X.shape[0]):
+        for j in range(X.shape[1]):
+            fn[i, j] = f(np.array([X[i, j], Y[i, j]]))
+
+    fig = plt.figure(figsize=(8, 6))
+
+    ax = fig.add_subplot(111, projection='3d')
+    ax.plot_surface(X, Y, fn, cmap='viridis')
+    ax.set_title(name)
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
+
+    plt.show()
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Plot benchmark functions.")
+    parser.add_argument("--fn", help="Specify function to plot", choices=[
+        'neg_alpine', 'rosenbrock', 'ackley'])
+    args = parser.parse_args()
+    
+    if args.fn == 'ackley':
+        plot_func(Ackley, "Ackley's Function")
+    elif args.fn == 'neg_alpine':
+        plot_func(negative_Alpine, "Negative Alpine Function")
+    elif args.fn == 'rosenbrock':
+        plot_func(Rosenbrock, "Rosenbrock Function")
+    else:
+        print(f"Err 404: function {args.fn} not found.")
+        
+
+if __name__ == "__main__":
+    main()
