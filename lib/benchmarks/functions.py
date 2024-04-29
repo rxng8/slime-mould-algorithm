@@ -30,6 +30,63 @@ def Rosenbrock(x: np.ndarray) -> np.ndarray:
   # out: (1)
   return ((x_i - 1)**2 + 100 * ((x_ip1 - x_i**2))**2).sum(-1, keepdims=True)
 
+
+
+
+
+
+
+
+###################################
+###################################
+def easom(x: np.ndarray) -> np.ndarray:
+  """Return the Easom function
+
+  Args:
+      x (np.ndarray): Shape (*B, D), any number of batch dimensions, and last dimension is the dim
+
+  Returns:
+      np.ndarray: (*B, 1)
+  """
+  x1, x2 = x1, x2 = x.T
+  return - np.cos(x1) * np.cos(x2) * np.exp(- np.sum((x - np.pi)**2, axis=1))
+
+###################################
+###################################
+
+def fourpeak(x):
+  """Return the Four-peak function
+
+  Args:
+      x (np.ndarray): Shape (*B, D), any number of batch dimensions, and last dimension is the dim
+
+  Returns:
+      np.ndarray: (*B, 1)
+  """
+  x1, x2 = x.T
+  return (np.exp(-((x1 - 4) ** 2 + (x2 - 4) ** 2)) + np.exp(-((x1 + 4) ** 2 + (x2 - 4) ** 2)) + 2 * (
+          np.exp(-(x1 ** 2 + x2 ** 2)) + np.exp(-(x1 ** 2 + (x2 + 4) ** 2))))
+
+###################################
+###################################
+
+def eggcrate(x):
+  """Return the Eggcrate function
+
+  Args:
+      x (np.ndarray): Shape (*B, D), any number of batch dimensions, and last dimension is the dim
+
+  Returns:
+      np.ndarray: (*B, 1)
+  """
+  x1, x2 = x.T
+  return - (x1 ** 2 + x2 ** 2 + 25 * (np.sin(x1) ** 2 + np.sin(x2) ** 2 ))
+
+###################################
+
+
+
+
 def Ackley(x: np.ndarray) -> np.ndarray: # returns a scalar
   """Return the Ackley function
 
