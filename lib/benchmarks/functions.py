@@ -36,9 +36,6 @@ def Rosenbrock(x: np.ndarray) -> np.ndarray:
 
 
 
-
-###################################
-###################################
 def easom(x: np.ndarray) -> np.ndarray:
   """Return the Easom function
 
@@ -48,11 +45,10 @@ def easom(x: np.ndarray) -> np.ndarray:
   Returns:
       np.ndarray: (*B, 1)
   """
-  x1, x2 = x1, x2 = x.T
-  return - np.cos(x1) * np.cos(x2) * np.exp(- np.sum((x - np.pi)**2, axis=1))
+  x1, x2 = x.T
+  return - np.cos(x1) * np.cos(x2) * np.exp(- (x1 - np.pi)**2 - - (x2 - np.pi)**2)
 
-###################################
-###################################
+
 
 def fourpeak(x):
   """Return the Four-peak function
@@ -67,8 +63,7 @@ def fourpeak(x):
   return (np.exp(-((x1 - 4) ** 2 + (x2 - 4) ** 2)) + np.exp(-((x1 + 4) ** 2 + (x2 - 4) ** 2)) + 2 * (
           np.exp(-(x1 ** 2 + x2 ** 2)) + np.exp(-(x1 ** 2 + (x2 + 4) ** 2))))
 
-###################################
-###################################
+
 
 def eggcrate(x):
   """Return the Eggcrate function
@@ -81,8 +76,6 @@ def eggcrate(x):
   """
   x1, x2 = x.T
   return - (x1 ** 2 + x2 ** 2 + 25 * (np.sin(x1) ** 2 + np.sin(x2) ** 2 ))
-
-###################################
 
 
 
