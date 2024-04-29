@@ -4,6 +4,149 @@ import numpy as np
 import matplotlib.pyplot as plt
 import argparse
 
+def bohachevsky(x: np.ndarray) -> np.ndarray:
+  """Return the Bohachevsky function
+  −100 ≤ xi ≤ 100
+  The global minimum is located at x∗ = (0, 0) with f (x∗) = 0
+
+  Args:
+      x (np.ndarray): Shape (*B, D), any number of batch dimensions, and last dimension is the dim
+
+  Returns:
+      np.ndarray: (*B, 1)
+  """
+  x1, x2 = x.T
+  return x1**2 + 2 * x2**2 - 0.3 * np.cos(3 * np.pi * x1) - 0.4 * np.cos(4 * np.pi * x2) + 0.7
+
+
+
+def bird(x: np.ndarray) -> np.ndarray:
+  """Return the Bird function
+  −2pi ≤ xi ≤ 2pi
+  The global minimum is located at x∗ = (4.70104, 3.15294)/(−1.58214, −3.13024) with f (x∗) = −106.764537
+
+  Args:
+      x (np.ndarray): Shape (*B, D), any number of batch dimensions, and last dimension is the dim
+
+  Returns:
+      np.ndarray: (*B, 1)
+  """
+  x1, x2 = x.T
+  return np.sin(x1) * np.exp((1 - np.cos(x2))**2) + np.cos(x2) * np.exp((1 - np.sin(x1))**2) + (x1 - x2)**2
+
+
+
+def bartelsconn(x: np.ndarray) -> np.ndarray:
+  """Return the Bartels Conn function
+  −500 ≤ xi ≤ 500
+  The global minimum is located at x∗ = (0, 0) with f (x∗) = 1
+
+  Args:
+      x (np.ndarray): Shape (*B, D), any number of batch dimensions, and last dimension is the dim
+
+  Returns:
+      np.ndarray: (*B, 1)
+  """
+  x1, x2 = x.T
+  return np.abs(x1**2 + x1*x2 + x2**2) + np.abs(np.sin(x1)) + np.abs(np.cos(x2))
+
+
+
+def booth(x: np.ndarray) -> np.ndarray:
+  """Return the Booth function
+  −10 ≤ xi ≤ 10
+  The global minimum is located at x∗ = (1, 3) with f (x∗) = 0
+
+  Args:
+      x (np.ndarray): Shape (*B, D), any number of batch dimensions, and last dimension is the dim
+
+  Returns:
+      np.ndarray: (*B, 1)
+  """
+  x1, x2 = x.T
+  return (x1 + 2*x2 - 7)**2 + (2*x1 + x2 - 5)**2
+
+
+def brent(x: np.ndarray) -> np.ndarray:
+  """Return the Brent function
+  −10 ≤ xi ≤ 10
+  The global minimum is located at x∗ = (0, 0) with f (x∗) = 0
+
+  Args:
+      x (np.ndarray): Shape (*B, D), any number of batch dimensions, and last dimension is the dim
+
+  Returns:
+      np.ndarray: (*B, 1)
+  """
+  x1, x2 = x.T
+  return (x1 + 10)**2 + (x2 + 10)**2 + np.exp(-(x1 ** 2 + x2 ** 2))
+
+
+
+def beale(x: np.ndarray) -> np.ndarray:
+  """Return the Beale function
+  −4.5 ≤ xi ≤ 4.5
+  The global minimum is located at x∗ = (3, 0.5) with f (x∗) = 0
+
+  Args:
+      x (np.ndarray): Shape (*B, D), any number of batch dimensions, and last dimension is the dim
+
+  Returns:
+      np.ndarray: (*B, 1)
+  """
+  x1, x2 = x.T
+  return (0.5 - x1 + x1 * x2)**2 + (2.25 - x1 + x1 * x2**2)**2 + (2.625 - x1 + x1 * x2**3)**2
+
+
+
+def camel(x: np.ndarray) -> np.ndarray:
+  """Return the Camel function
+  −5 ≤ xi ≤ 5
+  The global minimum is located at x∗ = (0, 0) with f (x∗) = 0
+
+  Args:
+      x (np.ndarray): Shape (*B, D), any number of batch dimensions, and last dimension is the dim
+
+  Returns:
+      np.ndarray: (*B, 1)
+  """
+  x1, x2 = x.T
+  return 2 * x1**2 - 1.05 * x1**4 + (1/6) * x1**6 + x1*x2 + x2**2
+
+
+
+def bukin(x: np.ndarray) -> np.ndarray:
+  """Return the Bukin function
+  −15 ≤ x1 ≤ -5
+  −3 ≤ x2 ≤ −3
+  The global minimum is located at x∗ = (−10, 0) with f (x∗) = 0
+
+  Args:
+      x (np.ndarray): Shape (*B, D), any number of batch dimensions, and last dimension is the dim
+
+  Returns:
+      np.ndarray: (*B, 1)
+  """
+  x1, x2 = x.T
+  return 100 * (x2 - 0.01 * x1**2 + 1) + 0.01 * (x1 + 10)**2
+
+
+
+def cube(x: np.ndarray) -> np.ndarray:
+  """Return the Cube function
+  −10 ≤ xi ≤ 10.
+  The global minimum is located at x∗ = (−1, 1) with f (x∗) = 0
+
+  Args:
+      x (np.ndarray): Shape (*B, D), any number of batch dimensions, and last dimension is the dim
+
+  Returns:
+      np.ndarray: (*B, 1)
+  """
+  x1, x2 = x.T
+  return 100 * (x2 - x1**3)**2 + (1 - x1)**2
+
+
 def negative_Alpine(x: np.ndarray) -> np.ndarray:
   """Return the negative Alpine function
 
@@ -14,21 +157,8 @@ def negative_Alpine(x: np.ndarray) -> np.ndarray:
       np.ndarray: (*B, 1)
   """
   return -np.abs((x * np.sin(x) + 0.1 * x)).sum(-1, keepdims=True)
-negative_Alpine.minimizing = False
 
-def Alpine(x: np.ndarray) -> np.ndarray:
-  """Return the negative Alpine function
-
-  Args:
-      x (np.ndarray): Shape (*B, D), any number of batch dimensions, and last dimension is the dim
-
-  Returns:
-      np.ndarray: (*B, 1)
-  """
-  return np.abs((x * np.sin(x) + 0.1 * x)).sum(-1, keepdims=True)
-Alpine.minimizing = True
-
-def Rosenbrock(x: np.ndarray) -> np.ndarray:
+def rosenbrock(x: np.ndarray) -> np.ndarray:
   """Return the negative Rosenbrock function
 
   Args:
@@ -38,11 +168,10 @@ def Rosenbrock(x: np.ndarray) -> np.ndarray:
       np.ndarray: (*B, 1)
   """
   # x: (D)
-  x_i = x[..., :-1]
-  x_ip1 = x[..., 1:]
+  x_i = x[:-1]
+  x_ip1 = x[1:]
   # out: (1)
   return ((x_i - 1)**2 + 100 * ((x_ip1 - x_i**2))**2).sum(-1, keepdims=True)
-Rosenbrock.minimizing = True
 
 
 def easom(x: np.ndarray) -> np.ndarray:
@@ -56,7 +185,6 @@ def easom(x: np.ndarray) -> np.ndarray:
   """
   x1, x2 = x.T
   return - np.cos(x1) * np.cos(x2) * np.exp(- (x1 - np.pi)**2 - - (x2 - np.pi)**2)
-
 
 
 def fourpeak(x):
@@ -73,7 +201,6 @@ def fourpeak(x):
           np.exp(-(x1 ** 2 + x2 ** 2)) + np.exp(-(x1 ** 2 + (x2 + 4) ** 2))))
 
 
-
 def eggcrate(x):
   """Return the Eggcrate function
 
@@ -88,8 +215,7 @@ def eggcrate(x):
 
 
 
-
-def Ackley(x: np.ndarray) -> np.ndarray: # returns a scalar
+def ackley(x: np.ndarray) -> np.ndarray: # returns a scalar
   """Return the Ackley function
 
   Args:
@@ -103,25 +229,9 @@ def Ackley(x: np.ndarray) -> np.ndarray: # returns a scalar
   a = -20 * np.exp(-0.02 * np.sqrt(d_inv * (x**2).sum(-1, keepdims=True)))
   b = np.exp(d_inv * np.cos(2 * np.pi * x).sum(-1, keepdims=True))
   return a - b + 20 + np.e
-Ackley.minimizing = True
 
-#######################################
-#######################################
-# def func(x: np.ndarray) -> np.ndarray:
-#   """Return the Easom function
 
-#   Args:
-#       x (np.ndarray): Shape (*B, D), any number of batch dimensions, and last dimension is the dim
 
-#   Returns:
-#       np.ndarray: (*B, 1)
-#   """
-#   x1, x2 = x.T
-#   # return
-# pass
-
-#######################################
-#######################################
 
 
 
