@@ -46,7 +46,7 @@ hyperparam_list = [
 results = {size: [] for size in pop_sizes}
 headers = ['Popul. Size'] + [f'$F={hp["differential_weight"]}, C_r={hp["crossover_param"]}$' for hp in hyperparam_list]
 # Experiment logging info
-experiment_name = 'mf9698_hw3_q4a'
+experiment_name = 'Test_DE'
 
 for pop_size in pop_sizes:
     config = config.update(population=pop_size)

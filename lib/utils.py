@@ -39,10 +39,9 @@ def define_stop_criterion(config):
                 target_fitness = criterion.get('target_fitness', float('inf'))
                 criteria.append(lambda state, fit=target_fitness: stop_by_fitness(state, fit))
         
-        # Combine criteria: stop if any criterion returns True (you can change logic here)
+        # Combine criteria: stop if any criterion returns True
         return lambda state: any(crit(state) for crit in criteria)
     else:
-        # Fallback to single criterion for backward compatibility
         if criteria_config['type'] == 'temperature':
             return lambda state: stop_by_temperature(state, criteria_config.get('min_temperature', float('inf')))
         elif criteria_config['type'] == 'iterations':
