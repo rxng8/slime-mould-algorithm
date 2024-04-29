@@ -1,6 +1,6 @@
 # Slime Mould Algorithm
 
-Group member: Ugly-Viet, Matthias, Faeze
+Group member: Viet, Matthias, Faeze
 
 
 ## How to Setup an Experiment
