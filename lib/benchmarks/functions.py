@@ -270,8 +270,6 @@ def main():
         plot_func(negative_Alpine, "Negative Alpine Function")
     elif args.fn == 'rosenbrock':
         plot_func(Rosenbrock, "Rosenbrock Function")
-    elif args.fn == 'test':
-        plot_func(test)
     else:
         print(f"Err 404: function {args.fn} not found.")
         
