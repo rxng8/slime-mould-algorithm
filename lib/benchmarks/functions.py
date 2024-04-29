@@ -46,14 +46,18 @@ def Ackley(x: np.ndarray) -> np.ndarray: # returns a scalar
   return a - b + 20 + np.e
 
 
+def test(x):
+    return np.sum( 1 / x)
+
+
 def plot_func(f, name:str="function") -> None:
     """Creates a visula of a objectve function using matplotlib.
     Args:
         f (function): The objective function.
         name (str, optional): The title of the plot. Defaults to "function".
     """
-    x = np.linspace(-5, 5, 100)
-    y = np.linspace(-5, 5, 100)
+    x = np.linspace(-10, 10, 100)
+    y = np.linspace(-10, 10, 100)
     X, Y = np.meshgrid(x, y)
     fn = np.zeros(X.shape)
 
@@ -76,7 +80,7 @@ def plot_func(f, name:str="function") -> None:
 def main():
     parser = argparse.ArgumentParser(description="Plot benchmark functions.")
     parser.add_argument("--fn", help="Specify function to plot", choices=[
-        'neg_alpine', 'rosenbrock', 'ackley'])
+        'neg_alpine', 'rosenbrock', 'ackley', 'test'])
     args = parser.parse_args()
     
     if args.fn == 'ackley':
@@ -85,6 +89,8 @@ def main():
         plot_func(negative_Alpine, "Negative Alpine Function")
     elif args.fn == 'rosenbrock':
         plot_func(Rosenbrock, "Rosenbrock Function")
+    elif args.fn == 'test':
+        plot_func(test)
     else:
         print(f"Err 404: function {args.fn} not found.")
         
