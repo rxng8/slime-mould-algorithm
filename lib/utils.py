@@ -24,16 +24,32 @@ def stop_by_fitness(state, target_fitness):
     
 
 def define_stop_criterion(config):
-    criterion_type = config['stop_criterion']['type']
-    if criterion_type == 'temperature':
-        min_temperature = config['stop_criterion'].get('min_temperature', 0)
-        return lambda state: stop_by_temperature(state, min_temperature)
-    elif criterion_type == 'iterations':
-        max_iterations = config['stop_criterion'].get('max_iterations', 1000)
-        return lambda state: stop_by_iterations(state, max_iterations)
-    elif criterion_type == 'fitness':
-        target_fitness = config['stop_criterion'].get('target_fitness', float('inf'))
-        return lambda state: stop_by_fitness(state, target_fitness)
+    criteria_config = config['stop_criterion']
+    if 'criteria' in criteria_config:
+        # Handle multiple criteria
+        criteria = []
+        for criterion in criteria_config['criteria']:
+            if criterion['type'] == 'temperature':
+                min_temperature = criterion.get('min_temperature', float('inf'))
+                criteria.append(lambda state, temp=min_temperature: stop_by_temperature(state, temp))
+            elif criterion['type'] == 'iterations':
+                max_iterations = criterion.get('max_iterations', 1000)
+                criteria.append(lambda state, max_i=max_iterations: stop_by_iterations(state, max_i))
+            elif criterion['type'] == 'fitness':
+                target_fitness = criterion.get('target_fitness', float('inf'))
+                criteria.append(lambda state, fit=target_fitness: stop_by_fitness(state, fit))
+        
+        # Combine criteria: stop if any criterion returns True (you can change logic here)
+        return lambda state: any(crit(state) for crit in criteria)
+    else:
+        # Fallback to single criterion for backward compatibility
+        if criteria_config['type'] == 'temperature':
+            return lambda state: stop_by_temperature(state, criteria_config.get('min_temperature', float('inf')))
+        elif criteria_config['type'] == 'iterations':
+            return lambda state: stop_by_iterations(state, criteria_config.get('max_iterations', 1000))
+        elif criteria_config['type'] == 'fitness':
+            return lambda state: stop_by_fitness(state, criteria_config.get('target_fitness', float('inf')))
+
 
 
 def generate_latex_table(results: Dict[int, List[str]], headers: List[str], experiment_name: str):

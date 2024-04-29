@@ -1,5 +1,4 @@
 # %%
-
 from typing import List, Dict, Tuple, Callable, Sequence, Any
 import numpy as np
 
@@ -10,7 +9,8 @@ class SimulatedAnnealing:
     def __init__(self, config) -> None:
         self.config = config
         self.initializer: Callable = get_initializer(config.initializer)
-        self.X_start = self.initializer(1, config.dim, config.lb, config.ub)
+        self.X_start = self.initializer(1, config.D, config.lb, config.ub)[0]
+
         self.cooling: Callable = self.init_cooling_schedule(config.cooling)
         self.T = config.T_0
         self.stop = define_stop_criterion(config)
@@ -23,7 +23,7 @@ class SimulatedAnnealing:
     }[name]
     
     def solve(self):
-        X = self.X_start[0] 
+        X = self.X_start 
         t = 0
         best_X, best_fitness = X, self.f(X)
         
@@ -49,5 +49,5 @@ class SimulatedAnnealing:
             t += 1
             self.T = self.cooling(t)
             # Update state after changes
-            state.update({'temperature': self.T, 'iterations': t})
+            state.update({'temperature': self.T, 'iterations': t, 'current_fitness': best_fitness})
         return best_X, best_fitness

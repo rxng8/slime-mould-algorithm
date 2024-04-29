@@ -20,7 +20,7 @@ np.random.seed(SEED)
 
 # Configuration values for optimization algorithm
 config = Config(
-  dim = D,
+  D = D,
   stop_criterion = {
     "type": "temperature",
     "min_temperature": 0.1
