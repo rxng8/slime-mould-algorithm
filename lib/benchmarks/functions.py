@@ -45,14 +45,6 @@ def Rosenbrock(x: np.ndarray) -> np.ndarray:
 Rosenbrock.minimizing = True
 
 
-
-
-
-
-
-
-###################################
-###################################
 def easom(x: np.ndarray) -> np.ndarray:
   """Return the Easom function
 
@@ -62,11 +54,10 @@ def easom(x: np.ndarray) -> np.ndarray:
   Returns:
       np.ndarray: (*B, 1)
   """
-  x1, x2 = x1, x2 = x.T
-  return - np.cos(x1) * np.cos(x2) * np.exp(- np.sum((x - np.pi)**2, axis=1))
+  x1, x2 = x.T
+  return - np.cos(x1) * np.cos(x2) * np.exp(- (x1 - np.pi)**2 - - (x2 - np.pi)**2)
 
-###################################
-###################################
+
 
 def fourpeak(x):
   """Return the Four-peak function
@@ -81,8 +72,7 @@ def fourpeak(x):
   return (np.exp(-((x1 - 4) ** 2 + (x2 - 4) ** 2)) + np.exp(-((x1 + 4) ** 2 + (x2 - 4) ** 2)) + 2 * (
           np.exp(-(x1 ** 2 + x2 ** 2)) + np.exp(-(x1 ** 2 + (x2 + 4) ** 2))))
 
-###################################
-###################################
+
 
 def eggcrate(x):
   """Return the Eggcrate function
@@ -95,8 +85,6 @@ def eggcrate(x):
   """
   x1, x2 = x.T
   return - (x1 ** 2 + x2 ** 2 + 25 * (np.sin(x1) ** 2 + np.sin(x2) ** 2 ))
-
-###################################
 
 
 
@@ -116,6 +104,29 @@ def Ackley(x: np.ndarray) -> np.ndarray: # returns a scalar
   b = np.exp(d_inv * np.cos(2 * np.pi * x).sum(-1, keepdims=True))
   return a - b + 20 + np.e
 Ackley.minimizing = True
+
+#######################################
+#######################################
+# def func(x: np.ndarray) -> np.ndarray:
+#   """Return the Easom function
+
+#   Args:
+#       x (np.ndarray): Shape (*B, D), any number of batch dimensions, and last dimension is the dim
+
+#   Returns:
+#       np.ndarray: (*B, 1)
+#   """
+#   x1, x2 = x.T
+#   # return
+# pass
+
+#######################################
+#######################################
+
+
+
+
+
 
 def plot_func(f, name:str="function") -> None:
     """Creates a visula of a objectve function using matplotlib.
