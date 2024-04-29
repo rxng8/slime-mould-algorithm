@@ -1,5 +1,5 @@
 # %%
-
+import os
 from typing import List, Dict, Tuple, Callable, Sequence, Any
 import numpy as np
 
@@ -34,4 +34,26 @@ def define_stop_criterion(config):
     elif criterion_type == 'fitness':
         target_fitness = config['stop_criterion'].get('target_fitness', float('inf'))
         return lambda state: stop_by_fitness(state, target_fitness)
+
+
+def generate_latex_table(results: Dict[int, List[str]], headers: List[str], experiment_name: str):
+    """Given all results from the experiment, it creates a table in LaTex format for the report.
+    Args:
+        results (Dict[int, List[str]]): List of a dict(key: population size, value: mean / std)
+        headers (List[str]): Header nformation of the table
+        file_path (str): The path where to save latex file
+    """
+    file_path = os.path.join('experiment', experiment_name)
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)  # Ensure the directory exists
     
+    # File path for the LaTeX file
+    file_path = os.path.join(file_path, 'results_table.tex')
+    
+    with open(file_path, 'w') as file:
+        file.write('\\begin{tabularx}{\\textwidth}{|' + 'X|' * len(headers) + '}\n\\hline\n')
+        header_row = ' & '.join(headers) + ' \\\\\n\\hline\n'
+        file.write(header_row)
+        for key, values in results.items():
+            row = f'$n = {key}$ & ' + ' & '.join(values) + ' \\\\\n'
+            file.write(row)
+        file.write('\\hline\n\\end{tabularx}\n')

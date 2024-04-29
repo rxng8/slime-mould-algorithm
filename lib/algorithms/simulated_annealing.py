@@ -10,7 +10,7 @@ class SimulatedAnnealing:
     def __init__(self, config) -> None:
         self.config = config
         self.initializer: Callable = get_initializer(config.initializer)
-        self.X_start = self.initializer(config.population, config.dim, config.lb, config.ub)
+        self.X_start = self.initializer(1, config.dim, config.lb, config.ub)
         self.cooling: Callable = self.init_cooling_schedule(config.cooling)
         self.T = config.T_0
         self.stop = define_stop_criterion(config)
