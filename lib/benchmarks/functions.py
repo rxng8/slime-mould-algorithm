@@ -31,11 +31,6 @@ def Rosenbrock(x: np.ndarray) -> np.ndarray:
   return ((x_i - 1)**2 + 100 * ((x_ip1 - x_i**2))**2).sum(-1, keepdims=True)
 
 
-
-
-
-
-
 def easom(x: np.ndarray) -> np.ndarray:
   """Return the Easom function
 
@@ -94,6 +89,29 @@ def Ackley(x: np.ndarray) -> np.ndarray: # returns a scalar
   a = -20 * np.exp(-0.02 * np.sqrt(d_inv * (x**2).sum(-1, keepdims=True)))
   b = np.exp(d_inv * np.cos(2 * np.pi * x).sum(-1, keepdims=True))
   return a - b + 20 + np.e
+
+
+#######################################
+#######################################
+# def func(x: np.ndarray) -> np.ndarray:
+#   """Return the Easom function
+
+#   Args:
+#       x (np.ndarray): Shape (*B, D), any number of batch dimensions, and last dimension is the dim
+
+#   Returns:
+#       np.ndarray: (*B, 1)
+#   """
+#   x1, x2 = x.T
+#   # return
+# pass
+
+#######################################
+#######################################
+
+
+
+
 
 
 def plot_func(f, name:str="function") -> None:
