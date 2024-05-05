@@ -168,8 +168,8 @@ def rosenbrock(x: np.ndarray) -> np.ndarray:
       np.ndarray: (*B, 1)
   """
   # x: (D)
-  x_i = x[:-1]
-  x_ip1 = x[1:]
+  x_i = x[..., :-1]
+  x_ip1 = x[..., 1:]
   # out: (1)
   return ((x_i - 1)**2 + 100 * ((x_ip1 - x_i**2))**2).sum(-1, keepdims=True)
 
@@ -265,13 +265,11 @@ def main():
     args = parser.parse_args()
     
     if args.fn == 'ackley':
-        plot_func(Ackley, "Ackley's Function")
+        plot_func(ackley, "Ackley's Function")
     elif args.fn == 'neg_alpine':
         plot_func(negative_Alpine, "Negative Alpine Function")
     elif args.fn == 'rosenbrock':
-        plot_func(Rosenbrock, "Rosenbrock Function")
-    elif args.fn == 'test':
-        plot_func(test)
+        plot_func(rosenbrock, "Rosenbrock Function")
     else:
         print(f"Err 404: function {args.fn} not found.")
         

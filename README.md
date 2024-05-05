@@ -9,7 +9,7 @@ Create a `experinement.py` file with the following setup.
 
 ### Imports and Global Variables
 
-1. Choose Algorithm and Benchmark
+#### 1. Choose Algorithm and Benchmark
 ```Python
 from lib.algorithms import SimulatedAnnealing
 from lib.benchmarks import Rosenbrock
@@ -17,13 +17,13 @@ from lib.benchmarks import Rosenbrock
 - Algorithm support for: `SlimeMold`, `SimulatedAnnealing`, `FireFly`, `DifferentialEvolution`
 - Benchmark support for: ...
 
-2. Add default library support
+#### 2. Add default library support
 ```Python
 from lib import Config  # Custom Object holding parameters
 from lib.solve import solve # solve wrapper
 ```
 
-3. Define Global Experiment Variables
+#### 3. Define Global Experiment Variables
 - `SEED`: Seed random function for deterministic outcome
 - `D`: Dimensions of search space of benchmark function
 - `LB`: Lower bound of benchmark function
@@ -49,3 +49,137 @@ config = Config(
     f = Rosenbrock
 )
 ```
+A `Config` stores all required parameters in order to be able to execute the algorithm. 
+In order to understand the setup for a specific algorithm please checkout the `example` folder with
+example projects for every methaheuristc algorithm available in this library.
+
+### Run an Algorithm using `solve`
+In order to run experiment, the `solve` wrapper function from `lib/solve.py/` has to be called.
+
+__Parameters__:
+- `trials`(int): The number of independent trials to run the specified algorithm. Each trial will start with possibly different initial conditions if the algorithm is stochastic.
+- `Algo` (Callable): The optimization algorithm to be tested. This function should be capable of being called with a configuration object and should return the fitness score of the solution it computes.
+- `config` (Callable): A configuration object or function that provides parameters needed by the Algo. The specifics of config should align with the requirements of the passed Algo.
+- `log_to_file` (bool, optional): If True, logs will be written to a file. Defaults to False.
+- `experiment_name` (str, optional): A name for the experiment, which will be used to name log files and directories. Defaults to an empty string, which results in using 'default_logger' as the logger name.
+
+__Returns__:
+- `fitness_scores` (numpy.ndarray): An array containing the fitness scores from each trial.
+- `mean_fitness` (float): The mean fitness score across all trials.
+- std_dev_fitness (float): The standard deviation of the fitness scores across all trials.
+- `result_string` (str): A formatted string representing the mean and standard deviation of the fitness scores, suitable for presentation in scientific documents (e.g., LaTeX format).
+
+__Example Usage__:
+```python
+from lib.algorithms import MyAlgorithm
+from lib.config import MyConfig
+
+# Configuration setup for the algorithm
+config = MyConfig(param1=10, param2=0.5)
+
+# Running the solve function
+fitness_scores, mean_fitness, std_dev_fitness, result_string = solve(
+    trials=30,
+    Algo=MyAlgorithm,
+    config=config,
+    log_to_file=True,
+    experiment_name='MyExperiment'
+)
+```
+
+### Example Experiment
+In this example we are creating an experiment using the `FireFly` algorithm.
+
+#### 1. __Import algorithm and other functions__
+```python
+import numpy as np
+from typing import Dict, List
+
+from lib.config import Config
+from lib.algorithms import FireFly
+from lib.benchmarks import Rosenbrock
+from lib.solve import solve
+from lib.utils import generate_latex_table
+```
+The code is performing an experiment on the `Rosenbrock` benchmark function provided in the library (Gloval Optima at `f(.) = 0`). The `Config` is a custom data structure stroing parameters required by the algorithm.
+
+#### 2. __Set Global Variables__
+```python
+SEED = 1990
+D = 2
+LB = -2.0
+UB = 2.0
+TRIALS = 30
+MAX_I = 1000
+
+np.random.seed(SEED)
+```
+
+#### 3. __Populate the `Config`__
+```python
+config = Config(
+    D=D,
+    lb=LB,
+    ub=UB,
+    funct=Rosenbrock,
+    stop_criterion={
+        'type': 'complex',
+        'criteria': [
+            {'type': 'iterations', 'max_iterations': 1000},
+            {'type': 'fitness', 'target_fitness': 0.01}
+        ]
+    },
+    min="Minimization",
+    gamma=0.0,
+    alpha=0.0,
+    beta0=0.0,
+    population=0,
+)
+```
+Note that the hyper-parameters are set to `0`. Since this experiment is running multiple settings, the initial value has to be set in will be overwritten in each experiment stage.
+
+#### 4. __Define hyper-parameters__
+```python
+swarm_sizes = [5, 10, 25, 50, 100]
+# different hyper-parameters used
+hyperparam_list = [
+    {'gamma': 1.0, 'alpha': 0.5, 'beta0':1.0},
+    {'gamma': 1.0, 'alpha': 0.2, 'beta0':1.0},
+    {'gamma': 1.0, 'alpha': 0.2, 'beta0':0.2}
+]
+```
+As mentioned in __(3.)__, the set of used hyper-parameters has to be specified.
+
+#### 5. __Define Structure for LaTeX export__
+```python
+results = {size: [] for size in swarm_sizes}
+# Headers based on hyperparameter configurations
+headers = ['Popul. Size'] + [f'$\\gamma={hp["gamma"]}, \\alpha={hp["alpha"]}, \\beta_0={hp["beta0"]}$' for hp in hyperparam_list]
+
+# Experiment logging info
+experiment_name = 'test_FireFly'
+```
+
+In order to be able to create a LaTeX table storing the computed values, the `header` of the table and the bins for the `mean` and `standard deviation` of each experiment has to be defined.<br>
+An `experiment_name` is also needed to store loggings and the LaTeX table.
+
+#### 6. __Run Algorithm__:
+```python
+for swarm_size in swarm_sizes:
+    config = config.update(population=swarm_size)
+    
+    for hyper_params in hyperparam_list:
+        config = config.update(hyper_params)
+        # Run experiment
+        _, mean_result, std_dev_result, latex_result = solve(TRIALS, FireFly, config, log_to_file=True, experiment_name=experiment_name)
+        results[swarm_size].append(latex_result)
+        
+generate_latex_table(results, headers, experiment_name)
+```
+
+The algorithm is run for every specified `pop_size` in `pop_sizes`. For each different population size, each of the spefied `hyper_params` of the `hyperparam_list` is updated in `config` and the `solve` function is called. For the solve function, we need to add the number of `TRIALS` for each parameter setting, the `FireFly` algorithm, the `config` file, and the `experiment_name`. As a result we get the last `fitness_scores`, the `mean_result`, the `std_dev_result` (standard deviation of the trials), and a `latex_result` (results in LaTeX format).<br>
+`generate_latex_table` creates the LaTeX table given a list of the LaTeX results, the header and the experiment name.
+
+The full code of this example can be found in `run_FireFly.py`.
+
+

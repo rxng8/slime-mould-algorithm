@@ -1,4 +1,4 @@
-import logging, os
+import logging, os, time
 from typing import Callable
 
 # External
@@ -7,19 +7,20 @@ import numpy as np
 def setup_logger(name: str, log_file: str = None, level: int = logging.INFO, stream: bool = True) -> logging.Logger:
     """Setup and return a configured logger."""
     logger = logging.getLogger(name)
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    if not logger.hasHandlers():
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
-    if log_file:
-        file_handler = logging.FileHandler(log_file)
-        file_handler.setFormatter(formatter)
-        logger.addHandler(file_handler)
+        if log_file:
+            file_handler = logging.FileHandler(log_file)
+            file_handler.setFormatter(formatter)
+            logger.addHandler(file_handler)
 
-    if stream:
-        stream_handler = logging.StreamHandler()
-        stream_handler.setFormatter(formatter)
-        logger.addHandler(stream_handler)
+        if stream:
+            stream_handler = logging.StreamHandler()
+            stream_handler.setFormatter(formatter)
+            logger.addHandler(stream_handler)
 
-    logger.setLevel(level)
+        logger.setLevel(level)
     return logger
 
 
@@ -51,13 +52,22 @@ def solve(trials: int, Algo: Callable, config: Callable, log_to_file: bool = Fal
     logger = setup_logger(logger_name, log_file_path, stream=not log_to_file)
     
     logger.info(f"Configuration: {vars(config)}")
+    
+    start_time = time.time()
     fitness_scores = run_experiment(trials, Algo, config, logger)
+    end_time = time.time()
     
     mean_fitness = np.mean(fitness_scores)
     std_dev_fitness = np.std(fitness_scores)
     
+    # return duration info
+    total_time = end_time - start_time
+    avg_time_per_trial = total_time / trials if trials > 0 else 0
+    
     logger.info(f"Mean of fitness scores: {mean_fitness}")
     logger.info(f"Standard Deviation of fitness scores: {std_dev_fitness}")
+    logger.info(f"Avg Time per Trial: {avg_time_per_trial:.4f} sec, Total Time Taken: {total_time:.4f} seconds")
     
     result_string = f"${mean_fitness:.7g} \\pm {std_dev_fitness:.7g}$"
+    # maybe also add time here so can be shown in table
     return fitness_scores, mean_fitness, std_dev_fitness, result_string
