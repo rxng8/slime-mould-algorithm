@@ -10,8 +10,8 @@ from lib.utils import generate_latex_table
 # Global variables (experiment setup)
 SEED = 1990
 D = 2
-LB = -2.0
-UB = 2.0
+LB = -10.0
+UB = 10.0
 TRIALS = 30
 MAX_I = 1000
 
@@ -25,7 +25,7 @@ config = Config(
     stop_criterion={
         'type': 'complex',
         'criteria': [
-            {'type': 'iterations', 'max_iterations': 1000},
+            {'type': 'iterations', 'max_iterations': MAX_I},
             {'type': 'fitness', 'target_fitness': 0.01}
         ]
     },

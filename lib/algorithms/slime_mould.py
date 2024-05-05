@@ -45,7 +45,7 @@ class SlimeMould:
 
     tricky_term = np.random.uniform() * np.log((bF - F) / (bF - wF) + 1)
     mid = self.config.pop_size // 2
-    W_new = W.copy() # need copy() here?
+    W_new = W
     W_new[:mid] = 1 - tricky_term[:mid]
     W_new[mid:] = 1 + tricky_term[mid:]
 
@@ -61,10 +61,10 @@ class SlimeMould:
     X_new = np.select([r < p, r >= p], [X_new_1, X_new_2])
 
     DF = bF if bF > DF else DF
-    return X_new, W_new, DF
+    return X_new.clip(self.config.lb, self.config.ub), W_new, DF
 
   def solve(self) -> tuple:
-        X = np.random.normal(0, 1, (self.config.pop_size, self.config.D))
+        X = np.random.normal(0, 1, (self.config.pop_size, self.config.D)).clip(self.config.lb, self.config.ub, )
         W = np.random.normal(0, 1, (self.config.pop_size, 1))
         DF = np.max(self.__fitness(X))
 
@@ -72,10 +72,10 @@ class SlimeMould:
         for t in range(self.config.max_iters):
             if self.stop(state):
                 break
-            X, W, DF = self.step(t, X, W, DF)
+            X, W, DF = self.step(t, X.copy(), W.copy(), DF)
             state.update({'iterations': t + 1, 'current_fitness': DF})
 
-        best_index = np.argmin(self.__fitness(X) if self.config.minimizing else -self.__fitness(X))
+        best_index = np.argmin(self.__fitness(X)) if self.config.minimizing else np.argmax(self.__fitness(X))
         return X[best_index], self.__fitness(X[best_index])
 
 
