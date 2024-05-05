@@ -68,6 +68,7 @@ class SlimeMould:
 
     for t in range(self.config.max_iters):
       X, W, DF = self.step(t, X.copy(), W.copy(), DF)
+      
       if t % 10 == 0:
         id = np.argmax(self.__fitness(X), 0)[0]
         print(f"[Step {t}] DF: {DF}, X: {X[id]}")
