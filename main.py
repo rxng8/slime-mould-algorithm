@@ -15,7 +15,9 @@ config = Config(
   dim = 10,
   max_iters = 20,
   minimizing = True,
-  seed = 69
+  seed = 69,
+  lower_bound=-5.0,
+  upper_bound=5.0
 )
 
 np.random.seed(config.seed)
@@ -34,7 +36,9 @@ fn = Rosenbrock
 config = config.update(
   minimizing=fn.minimizing,
   max_iters=100,
-  dim=2
+  dim=2,
+  lower_bound=-5.0,
+  upper_bound=5.0
 )
 print(config)
 S = SlimeMould(fn, config)
@@ -45,8 +49,10 @@ print("\nnegative_Alpine")
 fn = negative_Alpine
 config = config.update(
   minimizing=fn.minimizing,
-  max_iters=20,
-  dim=10
+  max_iters=50,
+  dim=2,
+  lower_bound=-10.0,
+  upper_bound=10.0
 )
 print(config)
 S = SlimeMould(fn, config)
