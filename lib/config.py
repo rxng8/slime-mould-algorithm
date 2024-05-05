@@ -39,7 +39,8 @@ class Config(dict):
     message = f"Tried to set key '{key}' on immutable config. Use update()."
     raise AttributeError(message)
 
-  def update(self, *args, **kwargs):
+  def update(self, *args, allow_new_keys=True, **kwargs):
+    # added allow_new_keys flag so can add hyperparams to existing config if needed
     result = self._data.copy()
     inputs = dict(*args, **kwargs)
     for key, new in inputs.items():
@@ -47,17 +48,23 @@ class Config(dict):
         pattern = re.compile(key)
         keys = {k for k in result if pattern.match(k)}
       else:
-        keys = [key]
+        keys = [key] if key in result or allow_new_keys else []
+        
       if not keys:
         raise KeyError(f'Unknown key or pattern {key}.')
+      
       for key in keys:
-        old = result[key]
+        #old = result[key]
+        old = result.get(key)
         try:
-          if isinstance(old, int) and isinstance(new, float):
-            if float(int(new)) != new:
-              message = f"Cannot convert fractional float {new} to int."
-              raise ValueError(message)
-          result[key] = type(old)(new)
+          if old is not None:
+            if isinstance(old, int) and isinstance(new, float):
+              if float(int(new)) != new:
+                message = f"Cannot convert fractional float {new} to int."
+                raise ValueError(message)
+            result[key] = type(old)(new)
+          else:
+            result[key] = new
         except (ValueError, TypeError):
           raise TypeError(
               f"Cannot convert '{new}' to type '{type(old).__name__}' " +
