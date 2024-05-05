@@ -217,7 +217,7 @@ def fourpeak(x):
   x1, x2 = x.T
   return (np.exp(-((x1 - 4) ** 2 + (x2 - 4) ** 2)) + np.exp(-((x1 + 4) ** 2 + (x2 - 4) ** 2)) + 2 * (
           np.exp(-(x1 ** 2 + x2 ** 2)) + np.exp(-(x1 ** 2 + (x2 + 4) ** 2))))
-fourpeak.minimizing = True
+fourpeak.minimizing = False
 
 
 
