@@ -40,7 +40,8 @@ class SlimeMould:
     bF = F[0][0] # scalar
     wF = F[-1][0] # scalar
 
-    tricky_term = np.random.uniform() * np.log((bF - F) / (bF - wF) + 1)
+    tricky_term = np.random.uniform() * np.log((bF - F) / (bF - wF).clip(1e-8) + 1)
+    # print(f"[DEBUG] bF - F: {(bF - F).mean()}; bF - wF: {(bF - wF).mean()}; all: {((bF - F) / (bF - wF).clip(1e-8) + 1).mean()}")
     mid = self.config.pop_size // 2
     W_new = W
     W_new[:mid] = 1 - tricky_term[:mid]
@@ -67,8 +68,9 @@ class SlimeMould:
 
     for t in range(self.config.max_iters):
       X, W, DF = self.step(t, X.copy(), W.copy(), DF)
-      if t % 1 == 0:
-        print(f"[Step {t}] DF: {DF}, X: {X.mean(0)}")
+      if t % 10 == 0:
+        id = np.argmax(self.__fitness(X), 0)[0]
+        print(f"[Step {t}] DF: {DF}, X: {X[id]}")
 
 
 

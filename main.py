@@ -13,7 +13,7 @@ from lib.algorithms import SlimeMould
 config = Config(
   pop_size = 1000,
   dim = 2,
-  max_iters = 20,
+  max_iters = 100,
   minimizing = True,
   seed = 69,
   lower_bound=-5.0,
@@ -35,7 +35,7 @@ print("\nRosenbrock:")
 fn = rosenbrock
 config = config.update(
   minimizing=True,
-  max_iters=100,
+  max_iters=200,
   dim=2,
   lower_bound=-5.0,
   upper_bound=5.0
