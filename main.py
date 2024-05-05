@@ -6,13 +6,13 @@ import numpy as np
 
 from lib import Config
 from lib.types import MetricsType
-from lib.benchmarks import Ackley, Rosenbrock, negative_Alpine
+from lib.benchmarks.functions import ackley, rosenbrock, negative_Alpine
 from lib.algorithms import SlimeMould
 
 # initial config
 config = Config(
   pop_size = 1000,
-  dim = 10,
+  dim = 2,
   max_iters = 20,
   minimizing = True,
   seed = 69,
@@ -24,17 +24,17 @@ np.random.seed(config.seed)
 
 ####### Run Ackley #####
 print("\nAckley:")
-fn = Ackley
-config = config.update(minimizing=fn.minimizing)
+fn = ackley
+config = config.update(minimizing=True)
 print(config)
 S = SlimeMould(fn, config)
 S.run()
 
 ####### Run Rosenbrock #####
 print("\nRosenbrock:")
-fn = Rosenbrock
+fn = rosenbrock
 config = config.update(
-  minimizing=fn.minimizing,
+  minimizing=True,
   max_iters=100,
   dim=2,
   lower_bound=-5.0,
@@ -48,7 +48,7 @@ S.run()
 print("\nnegative_Alpine")
 fn = negative_Alpine
 config = config.update(
-  minimizing=fn.minimizing,
+  minimizing=False,
   max_iters=50,
   dim=2,
   lower_bound=-10.0,

@@ -168,8 +168,8 @@ def rosenbrock(x: np.ndarray) -> np.ndarray:
       np.ndarray: (*B, 1)
   """
   # x: (D)
-  x_i = x[:-1]
-  x_ip1 = x[1:]
+  x_i = x[..., :-1]
+  x_ip1 = x[..., 1:]
   # out: (1)
   return ((x_i - 1)**2 + 100 * ((x_ip1 - x_i**2))**2).sum(-1, keepdims=True)
 
