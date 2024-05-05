@@ -2,18 +2,18 @@ import numpy as np
 from typing import Dict, List
 
 from lib.config import Config
-from lib.algorithms import SlimeMould
-from lib.benchmarks import Rosenbrock
+from lib.algorithms.slime_mould_solve import SlimeMould # different slime mould 
+from lib.benchmarks.functions import rosenbrock
 from lib.solve import solve
 from lib.utils import generate_latex_table
 
 # Global variables (experiment setup)
-SEED = 1990
+SEED = 69
 D = 2
-LB = -10.0
-UB = 10.0
+LB = -5.0
+UB = 5.0
 TRIALS = 30
-MAX_I = 1000
+MAX_I = 200
 
 np.random.seed(SEED)
 
@@ -21,20 +21,18 @@ config = Config(
     D=D,
     lb=LB,
     ub=UB,
-    funct=Rosenbrock,
+    funct=rosenbrock,
     stop_criterion={
-        'type': 'complex',
-        'criteria': [
-            {'type': 'iterations', 'max_iterations': MAX_I},
-            {'type': 'fitness', 'target_fitness': 0.001}
-        ]
-    },
-    minimizing=Rosenbrock.minimizing,
+        'type': 'fitness', 'target_fitness': 1e-5
+        },
+    minimizing=True,
     max_iters=MAX_I,
     pop_size=0,  # will update based on experiment
+    cooling_rate=0.8
 )
 
-pop_sizes = [5, 10, 25, 50, 100]
+#pop_sizes = [1000, 10, 25, 50, 100]
+pop_sizes = [1000]
 results = {size: [] for size in pop_sizes}
 headers = ['Popul. Size'] + [f'$AVG VAL HERE$']
 

@@ -6,49 +6,58 @@ import numpy as np
 
 from lib import Config
 from lib.types import MetricsType
-from lib.benchmarks import Ackley, Rosenbrock, negative_Alpine
-from lib.algorithms import SlimeMould
+from lib.benchmarks.functions import ackley, rosenbrock, negative_Alpine
+from lib.algorithms import SlimeMould, SlimeMouldSA
 
 # initial config
 config = Config(
   pop_size = 1000,
-  dim = 10,
-  max_iters = 20,
+  dim = 2,
+  max_iters = 100,
   minimizing = True,
-  seed = 69
+  seed = 69,
+  lower_bound=-5.0,
+  upper_bound=5.0,
+  cooling_rate=0.8
 )
 
 np.random.seed(config.seed)
 
 ####### Run Ackley #####
 print("\nAckley:")
-fn = Ackley
-config = config.update(minimizing=fn.minimizing)
+fn = ackley
+config = config.update(minimizing=True)
 print(config)
 S = SlimeMould(fn, config)
+# S = SlimeMouldSA(fn, config)
 S.run()
 
 ####### Run Rosenbrock #####
 print("\nRosenbrock:")
-fn = Rosenbrock
+fn = rosenbrock
 config = config.update(
-  minimizing=fn.minimizing,
-  max_iters=100,
-  dim=2
+  minimizing=True,
+  max_iters=200,
+  dim=2,
+  lower_bound=-5.0,
+  upper_bound=5.0
 )
 print(config)
 S = SlimeMould(fn, config)
+# S = SlimeMouldSA(fn, config)
 S.run()
 
 ####### Run Rosenbrock #####
 print("\nnegative_Alpine")
 fn = negative_Alpine
 config = config.update(
-  minimizing=fn.minimizing,
-  max_iters=20,
-  dim=10
+  minimizing=False,
+  max_iters=50,
+  dim=2,
+  lower_bound=-10.0,
+  upper_bound=10.0
 )
 print(config)
 S = SlimeMould(fn, config)
+# S = SlimeMouldSA(fn, config)
 S.run()
-
