@@ -26,7 +26,7 @@ config = Config(
         'type': 'complex',
         'criteria': [
             {'type': 'iterations', 'max_iterations': 1000},
-            {'type': 'fitness', 'target_fitness': 0.01}
+            {'type': 'fitness', 'target_fitness': 1e-6}
         ]
     },
     min="Minimization",
