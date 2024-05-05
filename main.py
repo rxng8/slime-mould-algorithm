@@ -7,7 +7,7 @@ import numpy as np
 from lib import Config
 from lib.types import MetricsType
 from lib.benchmarks.functions import ackley, rosenbrock, negative_Alpine
-from lib.algorithms import SlimeMould
+from lib.algorithms import SlimeMould, SlimeMouldSA
 
 # initial config
 config = Config(
@@ -17,7 +17,8 @@ config = Config(
   minimizing = True,
   seed = 69,
   lower_bound=-5.0,
-  upper_bound=5.0
+  upper_bound=5.0,
+  cooling_rate=0.8
 )
 
 np.random.seed(config.seed)
@@ -28,6 +29,7 @@ fn = ackley
 config = config.update(minimizing=True)
 print(config)
 S = SlimeMould(fn, config)
+# S = SlimeMouldSA(fn, config)
 S.run()
 
 ####### Run Rosenbrock #####
@@ -42,6 +44,7 @@ config = config.update(
 )
 print(config)
 S = SlimeMould(fn, config)
+# S = SlimeMouldSA(fn, config)
 S.run()
 
 ####### Run Rosenbrock #####
@@ -56,5 +59,6 @@ config = config.update(
 )
 print(config)
 S = SlimeMould(fn, config)
+# S = SlimeMouldSA(fn, config)
 S.run()
 
