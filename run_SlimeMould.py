@@ -26,7 +26,7 @@ config = Config(
         'type': 'complex',
         'criteria': [
             {'type': 'iterations', 'max_iterations': MAX_I},
-            {'type': 'fitness', 'target_fitness': 0.01}
+            {'type': 'fitness', 'target_fitness': 0.001}
         ]
     },
     minimizing=Rosenbrock.minimizing,

@@ -1,11 +1,13 @@
 
 # external
 import numpy as np
-
+import warnings
 from typing import Callable
 from lib.types import MetricsType
 from lib.config import Config
 from lib.utils import define_stop_criterion
+
+EPSILON = 1e-8 # Avoid nan values
 
 class SlimeMould:
   def __init__(self, config: Config) -> None:
@@ -43,8 +45,10 @@ class SlimeMould:
     bF = F[0][0] # scalar
     wF = F[-1][0] # scalar
 
-    tricky_term = np.random.uniform() * np.log((bF - F) / (bF - wF) + 1)
+    # avoid `nan`
+    tricky_term = np.random.uniform() * np.log((bF - F) / (bF - wF + EPSILON) + 1)
     mid = self.config.pop_size // 2
+    
     W_new = W
     W_new[:mid] = 1 - tricky_term[:mid]
     W_new[mid:] = 1 + tricky_term[mid:]
@@ -65,17 +69,19 @@ class SlimeMould:
 
   def solve(self) -> tuple:
         X = np.random.normal(0, 1, (self.config.pop_size, self.config.D)).clip(self.config.lb, self.config.ub, )
-        W = np.random.normal(0, 1, (self.config.pop_size, 1))
-        DF = np.max(self.__fitness(X))
+        W = np.random.normal(0, 1, (self.config.pop_size, 1)) # (N, 1)
+        DF = np.max(self.__fitness(X), 0)[0] # scalar
 
-        state = {'iterations': 0, 'current_fitness': DF}
+        state = {'iterations': 0, 'current_fitness': -DF}
         for t in range(self.config.max_iters):
             if self.stop(state):
-                break
+              break
             X, W, DF = self.step(t, X.copy(), W.copy(), DF)
-            state.update({'iterations': t + 1, 'current_fitness': DF})
-
-        best_index = np.argmin(self.__fitness(X)) if self.config.minimizing else np.argmax(self.__fitness(X))
+            state.update({'iterations': t + 1, 'current_fitness': -DF})
+            print(state)
+        best_index = np.argmax(self.__fitness(X))
+        print(state, X[best_index], self.__fitness(X[best_index]))
+        exit()
         return X[best_index], self.__fitness(X[best_index])
 
 
