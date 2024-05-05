@@ -7,19 +7,20 @@ import numpy as np
 def setup_logger(name: str, log_file: str = None, level: int = logging.INFO, stream: bool = True) -> logging.Logger:
     """Setup and return a configured logger."""
     logger = logging.getLogger(name)
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    if not logger.hasHandlers():
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
-    if log_file:
-        file_handler = logging.FileHandler(log_file)
-        file_handler.setFormatter(formatter)
-        logger.addHandler(file_handler)
+        if log_file:
+            file_handler = logging.FileHandler(log_file)
+            file_handler.setFormatter(formatter)
+            logger.addHandler(file_handler)
 
-    if stream:
-        stream_handler = logging.StreamHandler()
-        stream_handler.setFormatter(formatter)
-        logger.addHandler(stream_handler)
+        if stream:
+            stream_handler = logging.StreamHandler()
+            stream_handler.setFormatter(formatter)
+            logger.addHandler(stream_handler)
 
-    logger.setLevel(level)
+        logger.setLevel(level)
     return logger
 
 
