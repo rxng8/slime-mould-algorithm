@@ -58,17 +58,17 @@ class SlimeMould:
     X_new = np.select([r < p, r >= p], [X_new_1, X_new_2])
 
     DF = bF if bF > DF else DF
-    return X_new, W_new, DF
+    return X_new.clip(self.config.lower_bound, self.config.upper_bound), W_new, DF
 
   def run(self) -> MetricsType:
-    X = np.random.normal(0, 1, (self.config.pop_size, self.config.dim)) # locations/population/slime mould
+    X = np.random.normal(0, 1, (self.config.pop_size, self.config.dim)).clip(self.config.lower_bound, self.config.upper_bound) # locations/population/slime mould
     W = np.random.normal(0, 1, (self.config.pop_size, 1)) # weights
     DF = np.max(self.__fitness(X), 0)[0] # scalar
 
     for t in range(self.config.max_iters):
       X, W, DF = self.step(t, X.copy(), W.copy(), DF)
       if t % 1 == 0:
-        print(f"[Step {t}] DF: {DF}")
+        print(f"[Step {t}] DF: {DF}, X: {X.mean(0)}")
 
 
 
