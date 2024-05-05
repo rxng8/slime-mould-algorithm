@@ -3,7 +3,7 @@ from typing import Dict, List
 
 from lib.config import Config
 from lib.algorithms import FireFly
-from lib.benchmarks import Rosenbrock
+from lib.benchmarks.functions import rosenbrock
 from lib.solve import solve
 from lib.utils import generate_latex_table
 
@@ -21,7 +21,7 @@ config = Config(
     D=D,
     lb=LB,
     ub=UB,
-    funct=Rosenbrock,
+    funct=rosenbrock,
     stop_criterion={
         'type': 'complex',
         'criteria': [
@@ -59,5 +59,7 @@ for swarm_size in swarm_sizes:
         # Run experiment
         _, mean_result, std_dev_result, latex_result = solve(TRIALS, FireFly, config, log_to_file=True, experiment_name=experiment_name)
         results[swarm_size].append(latex_result)
+        print(f"with Population={swarm_size}, Alpha={hyper_params['alpha']}, Beta0={hyper_params['beta0']}, Gamma={hyper_params['gamma']}, mean={mean_result}, std={std_dev_result}")
+
         
 generate_latex_table(results, headers, experiment_name)

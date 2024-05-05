@@ -32,7 +32,7 @@ class FireFly:
         self.fireflies = np.random.uniform(config.lb, config.ub, size=(config.population, config.D))
         self.intensity = self._get_fitness()
         
-        # self.alpha_decay_factor = config.alpha_decay_factor # to adjust alpha after every iteration
+        # Algorithm parameters
         self.beta0 = config.beta0
         self.gamma = config.gamma
         self.alpha = config.alpha
@@ -45,27 +45,30 @@ class FireFly:
         Returns:
             An array of fitness values for each firefly.
         """
-        objective = np.apply_along_axis( self.f, 1, self.fireflies)
-        return  (objective) if self.min else (-objective)
+        objective = np.apply_along_axis(self.f, 1, self.fireflies)
+        return objective if self.min else -objective
     
     def _move_fireflies(self):
         """
         Move fireflies towards brighter ones and apply random perturbations.
         Updates the positions of fireflies based on attractiveness and distance to other fireflies.
         """
-        for i in range(len(self.fireflies)):
-            # Calculate the distance matrix between firefly i and all other fireflies
-            distances = np.linalg.norm(self.fireflies[i] - self.fireflies, axis=1)
-            betas = self.beta0 / (1 + self.gamma * distances ** 2)
-            
-            # Update positions
-            for j in range(len(self.fireflies)):
-                if self.intensity[j] > self.intensity[i]:
-                    self.fireflies[i] += betas[j] * (self.fireflies[j] - self.fireflies[i])
-            
-            # Add random perturbation and clip
-            self.fireflies[i] += self.alpha * (np.random.rand(self.D) - 0.5)
-            self.fireflies[i] = np.clip(self.fireflies[i], self.lb, self.ub)
+        # Compute the pairwise distance matrix (N, N)
+        distances = np.linalg.norm(self.fireflies[:, None] - self.fireflies[None, :], axis=-1)
+        # Compute attractiveness (N, N)
+        betas = self.beta0 / (1 + self.gamma * distances ** 2)
+        np.fill_diagonal(betas, 0)  # Prevent self-attraction
+        # Flatten intensity from (N, 1) to (N,)
+        intensity_flat = self.intensity.flatten()
+        # Find which fireflies are brighter (N, N)
+        brighter_mask = intensity_flat[:, None] > intensity_flat[None, :]
+        # Calculate movements based on brighter fireflies (N, N, 2)
+        movement = betas[:, :, None] * (self.fireflies[None, :, :] - self.fireflies[:, None, :])
+        # Sum all contributions where firefly is attracted brighter ones (N, 2)
+        total_movement = np.sum(movement * brighter_mask[:, :, None], axis=1)
+        # Apply movements and add random perturbation
+        self.fireflies += total_movement + self.alpha * (np.random.rand(*self.fireflies.shape) - 0.5)
+        self.fireflies = np.clip(self.fireflies, self.lb, self.ub)
             
     def _update_intensity(self):
         """
