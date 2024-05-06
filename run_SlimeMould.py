@@ -3,8 +3,8 @@ import numpy as np
 from typing import Dict, List
 
 from lib.config import Config
-from lib.algorithms.slime_mould_solve2 import SlimeMould # different slime mould 
-from lib.benchmarks.functions import rosenbrock
+from lib.algorithms.slime_mould_solve import SlimeMould # different slime mould 
+from lib.benchmarks.functions import rosenbrock, negative_Alpine
 from lib.solve import solve
 from lib.utils import generate_latex_table
 
@@ -22,11 +22,11 @@ config = Config(
     D=D,
     lb=LB,
     ub=UB,
-    funct=rosenbrock,
+    funct=negative_Alpine,
     stop_criterion={
         'type': 'fitness', 'target_fitness': 1e-5
         },
-    minimizing=True,
+    minimizing=False,
     max_iters=MAX_I,
     pop_size=0,  # will update based on experiment
     cooling_rate=0.8
