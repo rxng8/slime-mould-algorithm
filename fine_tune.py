@@ -146,14 +146,30 @@ cube = {
 ### Test parameters
 populations = [5, 10, 25, 50, 100]
 
+# Parameters for firefly
+# hyperparam_list = [
+#     # take middle
+#     {'gamma': 1.0, 'alpha': 0.5, 'beta0':1.0},
+#     {'gamma': 1.0, 'alpha': 0.2, 'beta0':1.0},
+#     {'gamma': 1.0, 'alpha': 0.2, 'beta0':0.2}
+# ]
+# Parameters for bat
+# hyperparam_list = [
+#     # take middle
+#     {'alpha': 0.9, 'gamma': 0.9, 'pulse_rate':0.5, 'freq_min': 0, 'freq_max': 2, 'loudness':0.25},
+#     {'alpha': 0.9, 'gamma': 0.7, 'pulse_rate':0.7, 'freq_min': 0, 'freq_max': 2, 'loudness':0.25},
+#     {'alpha': 1.0, 'gamma': 0.9, 'pulse_rate':0.2, 'freq_min': 0, 'freq_max': 2, 'loudness':0.25}
+# ]
+# Parameters for PSO
 hyperparam_list = [
-    {'gamma': 1.0, 'alpha': 0.5, 'beta0':1.0},
-    {'gamma': 1.0, 'alpha': 0.2, 'beta0':1.0},
-    {'gamma': 1.0, 'alpha': 0.2, 'beta0':0.2}
+    {'alpha': 0.9, 'beta': 0.5, 'v_max':1.0, 'v_init': 0.1},
+    {'alpha': 0.4, 'beta': 0.5, 'v_max':1.0, 'v_init': 0.1},
+    {'alpha': 0.9, 'beta': 0.1, 'v_max':1.0, 'v_init': 0.1},
+    {'alpha': 0.9, 'beta': 0.8, 'v_max':1.0, 'v_init': 0.1},
 ]
 
 # Experiment logging info
-experiment_name = 'test_FireFly'
+experiment_name = 'test_PSO'
 
 config = Config(
     D=2,
@@ -161,23 +177,29 @@ config = Config(
         'type': 'complex',
         'criteria': [
             {'type': 'iterations', 'max_iterations': 1000},
-            {'type': 'fitness', 'target_fitness': -1.0} # depends on function!
+            {'type': 'fitness', 'target_fitness': -1e-6} # Change depedning on function
         ]
     }
 )
-config = config.update(cube)
+config = config.update(neg_alpine) # change function here
 
 results = {size: [] for size in populations}
-# Headers based on hyperparameter configurations
-headers = ['Popul. Size'] + [f'$\\gamma={hp["gamma"]}, \\alpha={hp["alpha"]}, \\beta_0={hp["beta0"]}$' for hp in hyperparam_list]
+# Headers for firefly
+# headers = ['Popul. Size'] + [f'$\\gamma={hp["gamma"]}, \\alpha={hp["alpha"]}, \\beta_0={hp["beta0"]}$' for hp in hyperparam_list]
+
+# header for bat
+# headers = ['Popul. Size'] + [f'$\\alpha={hp["alpha"]}, \\gamma={hp["gamma"]}, \\pulse rate={hp["pulse_rate"]}$' for hp in hyperparam_list]
+
+# header for PSO
+headers = ['Popul. Size'] + [f'$\\alpha={hp["alpha"]}, \\beta={hp["beta"]}$' for hp in hyperparam_list]
 
 for population in populations:
     config = config.update(population=population)
     
     for hyper_params in hyperparam_list:
         config = config.update(hyper_params)
-        # Run experiment
-        _, mean_result, std_dev_result, latex_result = solve(TRIALS, FireFly, config, log_to_file=False, experiment_name=experiment_name)
+        # Run experiment ( with selected algorithm)
+        _, mean_result, std_dev_result, latex_result = solve(TRIALS, PSO, config, log_to_file=False, experiment_name=experiment_name)
         results[population].append(latex_result)
 
 generate_latex_table(results, headers, experiment_name)

@@ -15,6 +15,9 @@ class PSO:
         self.D = config.D   # dimension search space
         self.f = config.funct   # Optimization Function
         
+        # Minimization or Maximization Problem
+        self.min = True if hasattr(config, "min") else False
+        
         # Stop Criterion
         self.stop = define_stop_criterion(config)
         
@@ -76,7 +79,7 @@ class PSO:
         curr_fit = np.apply_along_axis(self.f, 1, self.a_pos) # shape(N, 1)
         # Flatten to ensure 1D
         curr_fit = curr_fit.ravel() # shape(N,)
-        return curr_fit
+        return curr_fit if self.min else -curr_fit
     
     def solve(self) -> tuple:
         """Runs each generation of the algorithm.
