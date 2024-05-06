@@ -170,7 +170,7 @@ def negative_Alpine(x: np.ndarray) -> np.ndarray:
       np.ndarray: (*B, 1)
   """
   return -np.abs((x * np.sin(x) + 0.1 * x)).sum(-1, keepdims=True)
-negative_Alpine.minimizing = True
+negative_Alpine.minimizing = False
 
 
 def rosenbrock(x: np.ndarray) -> np.ndarray:
