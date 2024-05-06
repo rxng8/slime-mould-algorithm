@@ -1,3 +1,4 @@
+import os, sys
 import numpy as np
 from typing import Dict, List
 
@@ -6,6 +7,10 @@ from lib.algorithms import Bat
 from lib.benchmarks.functions import rosenbrock
 from lib.solve import solve
 from lib.utils import generate_latex_table
+
+# Add the lib directory to the sys.path
+lib_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, lib_path)
 
 # Best RESULTS rosenbrock:
 # pop_size = 25

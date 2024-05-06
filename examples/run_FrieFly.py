@@ -1,5 +1,10 @@
+import os, sys
 import numpy as np
 from typing import Dict, List
+
+# Add the lib directory to the sys.path
+lib_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, lib_path)
 
 from lib.config import Config
 from lib.algorithms import FireFly
