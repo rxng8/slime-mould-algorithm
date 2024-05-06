@@ -14,6 +14,8 @@ from lib.solve import compare
 
 # Loop through all the benchmark
 for (func_name, FUNCT) in getmembers(function_module, isfunction):
+    if "plot_func" in func_name:
+        continue
 
     # Global variables (experiment setup)
     SEED = 1990

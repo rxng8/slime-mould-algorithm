@@ -15,7 +15,8 @@ def bohachevsky(x: np.ndarray) -> np.ndarray:
   Returns:
       np.ndarray: (*B, 1)
   """
-  x1, x2 = x.T
+  x1 = x[..., :1]
+  x2 = x[..., 1:2]
   return x1**2 + 2 * x2**2 - 0.3 * np.cos(3 * np.pi * x1) - 0.4 * np.cos(4 * np.pi * x2) + 0.7
 bohachevsky.minimizing = True
 
@@ -32,7 +33,8 @@ def bird(x: np.ndarray) -> np.ndarray:
   Returns:
       np.ndarray: (*B, 1)
   """
-  x1, x2 = x.T
+  x1 = x[..., :1]
+  x2 = x[..., 1:2]
   return np.sin(x1) * np.exp((1 - np.cos(x2))**2) + np.cos(x2) * np.exp((1 - np.sin(x1))**2) + (x1 - x2)**2
 bird.minimizing = True
 
@@ -50,7 +52,8 @@ def bartelsconn(x: np.ndarray) -> np.ndarray:
   Returns:
       np.ndarray: (*B, 1)
   """
-  x1, x2 = x.T
+  x1 = x[..., :1]
+  x2 = x[..., 1:2]
   return np.abs(x1**2 + x1*x2 + x2**2) + np.abs(np.sin(x1)) + np.abs(np.cos(x2))
 bartelsconn.minimizing = True
 
@@ -67,7 +70,8 @@ def booth(x: np.ndarray) -> np.ndarray:
   Returns:
       np.ndarray: (*B, 1)
   """
-  x1, x2 = x.T
+  x1 = x[..., :1]
+  x2 = x[..., 1:2]
   return (x1 + 2*x2 - 7)**2 + (2*x1 + x2 - 5)**2
 booth.minimizing = True
 
@@ -84,7 +88,8 @@ def brent(x: np.ndarray) -> np.ndarray:
   Returns:
       np.ndarray: (*B, 1)
   """
-  x1, x2 = x.T
+  x1 = x[..., :1]
+  x2 = x[..., 1:2]
   return (x1 + 10)**2 + (x2 + 10)**2 + np.exp(-(x1 ** 2 + x2 ** 2))
 brent.minimizing = True
 
@@ -102,7 +107,8 @@ def beale(x: np.ndarray) -> np.ndarray:
   Returns:
       np.ndarray: (*B, 1)
   """
-  x1, x2 = x.T
+  x1 = x[..., :1]
+  x2 = x[..., 1:2]
   return (0.5 - x1 + x1 * x2)**2 + (2.25 - x1 + x1 * x2**2)**2 + (2.625 - x1 + x1 * x2**3)**2
 beale.minimizing = True
 
@@ -119,7 +125,8 @@ def camel(x: np.ndarray) -> np.ndarray:
   Returns:
       np.ndarray: (*B, 1)
   """
-  x1, x2 = x.T
+  x1 = x[..., :1]
+  x2 = x[..., 1:2]
   return 2 * x1**2 - 1.05 * x1**4 + (1/6) * x1**6 + x1*x2 + x2**2
 camel.minimizing = True
 
@@ -137,7 +144,8 @@ def bukin(x: np.ndarray) -> np.ndarray:
   Returns:
       np.ndarray: (*B, 1)
   """
-  x1, x2 = x.T
+  x1 = x[..., :1]
+  x2 = x[..., 1:2]
   return 100 * (x2 - 0.01 * x1**2 + 1) + 0.01 * (x1 + 10)**2
 bukin.minimizing = True
 
@@ -154,7 +162,8 @@ def cube(x: np.ndarray) -> np.ndarray:
   Returns:
       np.ndarray: (*B, 1)
   """
-  x1, x2 = x.T
+  x1 = x[..., :1]
+  x2 = x[..., 1:2]
   return 100 * (x2 - x1**3)**2 + (1 - x1)**2
 cube.minimizing = True
 
@@ -199,7 +208,8 @@ def easom(x: np.ndarray) -> np.ndarray:
   Returns:
       np.ndarray: (*B, 1)
   """
-  x1, x2 = x.T
+  x1 = x[..., :1]
+  x2 = x[..., 1:2]
   return - np.cos(x1) * np.cos(x2) * np.exp(- (x1 - np.pi)**2 - (x2 - np.pi)**2)
 easom.minimizing = True
 
@@ -213,7 +223,8 @@ def fourpeak(x):
   Returns:
       np.ndarray: (*B, 1)
   """
-  x1, x2 = x.T
+  x1 = x[..., :1]
+  x2 = x[..., 1:2]
   return (np.exp(-((x1 - 4) ** 2 + (x2 - 4) ** 2)) + np.exp(-((x1 + 4) ** 2 + (x2 - 4) ** 2)) + 2 * (
           np.exp(-(x1 ** 2 + x2 ** 2)) + np.exp(-(x1 ** 2 + (x2 + 4) ** 2))))
 fourpeak.minimizing = False
@@ -229,7 +240,8 @@ def eggcrate(x):
   Returns:
       np.ndarray: (*B, 1)
   """
-  x1, x2 = x.T
+  x1 = x[..., :1]
+  x2 = x[..., 1:2]
   return - (x1 ** 2 + x2 ** 2 + 25 * (np.sin(x1) ** 2 + np.sin(x2) ** 2 ))
 eggcrate.minimizing = True
 
