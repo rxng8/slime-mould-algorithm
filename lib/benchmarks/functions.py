@@ -17,6 +17,7 @@ def bohachevsky(x: np.ndarray) -> np.ndarray:
   """
   x1, x2 = x.T
   return x1**2 + 2 * x2**2 - 0.3 * np.cos(3 * np.pi * x1) - 0.4 * np.cos(4 * np.pi * x2) + 0.7
+bohachevsky.minimizing = True
 
 
 
@@ -33,6 +34,8 @@ def bird(x: np.ndarray) -> np.ndarray:
   """
   x1, x2 = x.T
   return np.sin(x1) * np.exp((1 - np.cos(x2))**2) + np.cos(x2) * np.exp((1 - np.sin(x1))**2) + (x1 - x2)**2
+bird.minimizing = True
+
 
 
 
@@ -49,6 +52,7 @@ def bartelsconn(x: np.ndarray) -> np.ndarray:
   """
   x1, x2 = x.T
   return np.abs(x1**2 + x1*x2 + x2**2) + np.abs(np.sin(x1)) + np.abs(np.cos(x2))
+bartelsconn.minimizing = True
 
 
 
@@ -65,6 +69,8 @@ def booth(x: np.ndarray) -> np.ndarray:
   """
   x1, x2 = x.T
   return (x1 + 2*x2 - 7)**2 + (2*x1 + x2 - 5)**2
+booth.minimizing = True
+
 
 
 def brent(x: np.ndarray) -> np.ndarray:
@@ -80,6 +86,8 @@ def brent(x: np.ndarray) -> np.ndarray:
   """
   x1, x2 = x.T
   return (x1 + 10)**2 + (x2 + 10)**2 + np.exp(-(x1 ** 2 + x2 ** 2))
+brent.minimizing = True
+
 
 
 
@@ -96,6 +104,7 @@ def beale(x: np.ndarray) -> np.ndarray:
   """
   x1, x2 = x.T
   return (0.5 - x1 + x1 * x2)**2 + (2.25 - x1 + x1 * x2**2)**2 + (2.625 - x1 + x1 * x2**3)**2
+beale.minimizing = True
 
 
 
@@ -112,6 +121,7 @@ def camel(x: np.ndarray) -> np.ndarray:
   """
   x1, x2 = x.T
   return 2 * x1**2 - 1.05 * x1**4 + (1/6) * x1**6 + x1*x2 + x2**2
+camel.minimizing = True
 
 
 
@@ -129,6 +139,7 @@ def bukin(x: np.ndarray) -> np.ndarray:
   """
   x1, x2 = x.T
   return 100 * (x2 - 0.01 * x1**2 + 1) + 0.01 * (x1 + 10)**2
+bukin.minimizing = True
 
 
 
@@ -145,6 +156,8 @@ def cube(x: np.ndarray) -> np.ndarray:
   """
   x1, x2 = x.T
   return 100 * (x2 - x1**3)**2 + (1 - x1)**2
+cube.minimizing = True
+
 
 
 def negative_Alpine(x: np.ndarray) -> np.ndarray:
@@ -157,6 +170,8 @@ def negative_Alpine(x: np.ndarray) -> np.ndarray:
       np.ndarray: (*B, 1)
   """
   return -np.abs((x * np.sin(x) + 0.1 * x)).sum(-1, keepdims=True)
+negative_Alpine.minimizing = True
+
 
 def rosenbrock(x: np.ndarray) -> np.ndarray:
   """Return the negative Rosenbrock function
@@ -172,6 +187,7 @@ def rosenbrock(x: np.ndarray) -> np.ndarray:
   x_ip1 = x[..., 1:]
   # out: (1)
   return ((x_i - 1)**2 + 100 * ((x_ip1 - x_i**2))**2).sum(-1, keepdims=True)
+rosenbrock.minimizing = True
 
 
 def easom(x: np.ndarray) -> np.ndarray:
@@ -185,6 +201,7 @@ def easom(x: np.ndarray) -> np.ndarray:
   """
   x1, x2 = x.T
   return - np.cos(x1) * np.cos(x2) * np.exp(- (x1 - np.pi)**2 - (x2 - np.pi)**2)
+easom.minimizing = True
 
 
 def fourpeak(x):
@@ -199,6 +216,8 @@ def fourpeak(x):
   x1, x2 = x.T
   return (np.exp(-((x1 - 4) ** 2 + (x2 - 4) ** 2)) + np.exp(-((x1 + 4) ** 2 + (x2 - 4) ** 2)) + 2 * (
           np.exp(-(x1 ** 2 + x2 ** 2)) + np.exp(-(x1 ** 2 + (x2 + 4) ** 2))))
+fourpeak.minimizing = False
+
 
 
 def eggcrate(x):
@@ -212,6 +231,7 @@ def eggcrate(x):
   """
   x1, x2 = x.T
   return - (x1 ** 2 + x2 ** 2 + 25 * (np.sin(x1) ** 2 + np.sin(x2) ** 2 ))
+eggcrate.minimizing = True
 
 
 
@@ -229,6 +249,8 @@ def ackley(x: np.ndarray) -> np.ndarray: # returns a scalar
   a = -20 * np.exp(-0.02 * np.sqrt(d_inv * (x**2).sum(-1, keepdims=True)))
   b = np.exp(d_inv * np.cos(2 * np.pi * x).sum(-1, keepdims=True))
   return a - b + 20 + np.e
+ackley.minimizing = True
+
 
 
 def plot_func(f, name:str="function") -> None:
