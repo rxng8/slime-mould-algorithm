@@ -2,7 +2,7 @@ import numpy as np
 from typing import Dict, List
 
 from lib.config import Config
-from lib.algorithms import FireFly, Bat, PSO, SlimeMould
+from lib.algorithms import FireFly, Bat, PSO, SlimeMould, SimulatedAnnealingSlimeMould
 from lib.benchmarks.functions import rosenbrock
 from lib.solve import compare
 
@@ -54,12 +54,17 @@ pso_config = Config(
 pso_config = pso_config.update(GLOBAL)
 
 slime_mould_config = Config(
-    max_iters=1000,
-    cooling_rate=0.8
+    max_iters=1000
 )
 slime_mould_config = slime_mould_config.update(GLOBAL)
 
-configs = [firefly_config, bat_config, pso_config, slime_mould_config]
-algos = [FireFly, Bat, PSO, SlimeMould]
+simulated_annealing_slime_mould_config = Config(
+    max_iters=1000,
+    cooling_rate=0.8
+)
+simulated_annealing_slime_mould_config = simulated_annealing_slime_mould_config.update(GLOBAL)
+
+configs = [firefly_config, bat_config, pso_config, slime_mould_config, simulated_annealing_slime_mould_config]
+algos = [FireFly, Bat, PSO, SlimeMould, SimulatedAnnealingSlimeMould]
 
 compare(algos, configs, populations, TRIALS, "Test_Compare")
