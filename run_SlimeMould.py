@@ -3,7 +3,7 @@ import numpy as np
 from typing import Dict, List
 
 from lib.config import Config
-from lib.algorithms.slime_mould_solve import SlimeMould # different slime mould 
+from lib.algorithms.slime_mould_solve2 import SlimeMould # different slime mould 
 from lib.benchmarks.functions import rosenbrock
 from lib.solve import solve
 from lib.utils import generate_latex_table
