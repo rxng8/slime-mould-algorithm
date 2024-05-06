@@ -22,11 +22,11 @@ config = Config(
     D=D,
     lb=LB,
     ub=UB,
-    funct=negative_Alpine,
+    funct=rosenbrock,
     stop_criterion={
         'type': 'fitness', 'target_fitness': 1e-5
         },
-    minimizing=False,
+    minimizing=rosenbrock.minimizing,
     max_iters=MAX_I,
     pop_size=0,  # will update based on experiment
     cooling_rate=0.8

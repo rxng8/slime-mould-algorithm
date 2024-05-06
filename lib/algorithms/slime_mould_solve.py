@@ -10,6 +10,7 @@ class SlimeMould:
   def __init__(self, config: Config) -> None:
     self.config = config
     self.objective_fn = config.funct
+    self.stop: Callable = define_stop_criterion(config)
 
   def __fitness(self, X):
     # This algorithm is defaulted to maximizing the objective function
@@ -65,16 +66,28 @@ class SlimeMould:
   def solve(self) -> tuple:
     X = np.random.normal(0, 1, (self.config.pop_size, self.config.D)).clip(self.config.lb, self.config.ub) # locations/population/slime mould
     W = np.random.normal(0, 1, (self.config.pop_size, 1)) # weights
-    
+
     curr_best_id = np.argmax(self.__fitness(X), axis=0)[0]
     X_gstar = X[curr_best_id]
-    DF = self.__fitness(X_gstar) # scalar
+    DF = self.__fitness(X_gstar)[0] # scalar
+    state = {'current_fitness': -DF if self.config.minimizing else DF}
 
     for t in range(self.config.max_iters):
+      if self.stop(state):
+        break
       X, W, DF = self.step(t, X.copy(), W.copy(), DF)
       # if t % 10 == 0:
         # id = np.argmax(self.__fitness(X), 0)[0]
         # print(f"[Step {t}] X: {X[id]}, best: {self.__fitness(X[id])[0]}")
+      curr_best_id = np.argmax(self.__fitness(X), axis=0)[0]
+      X_curr_best = X[curr_best_id]
+      if self.__fitness(X_curr_best) > self.__fitness(X_gstar):
+        X_gstar = X_curr_best.copy()
 
-    id = np.argmax(self.__fitness(X), 0)[0]
-    return X[id], -self.__fitness(X[id])[0] if self.config.minimizing else self.__fitness(X[id])[0]
+      state.update({'current_fitness': -DF if self.config.minimizing else DF})
+
+    # id = np.argmax(self.__fitness(X), 0)[0]
+    # return X[id], -self.__fitness(X[id])[0] if self.config.minimizing else self.__fitness(X[id])[0]
+
+    F = self.__fitness(X_gstar)[0]
+    return X_gstar, -F if self.config.minimizing else F
