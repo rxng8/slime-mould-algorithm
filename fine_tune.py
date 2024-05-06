@@ -2,7 +2,7 @@ import numpy as np
 from typing import Dict, List
 
 from lib.config import Config
-from lib.algorithms import FireFly
+from lib.algorithms import FireFly, Bat, PSO
 import lib.benchmarks.functions as fn
 from lib.solve import solve
 from lib.utils import generate_latex_table
