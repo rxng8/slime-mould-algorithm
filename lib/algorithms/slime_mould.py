@@ -14,7 +14,7 @@ class SlimeMould:
 
   def __fitness(self, X):
     # This algorithm is defaulted to maximizing the objective function
-    minimizing = self.config.get("minimizing", False)
+    minimizing = self.config.minimizing
     if minimizing:
       return -self.objective_fn(X) # (B, 1)
     else:
@@ -44,13 +44,13 @@ class SlimeMould:
     # Weight update W(SmellIndex)
     tricky_term = np.random.uniform() * np.log((bF - F) / (bF - wF).clip(1e-8) + 1)
     # print(f"[DEBUG] bF - F: {(bF - F).mean()}; bF - wF: {(bF - wF).mean()}; all: {((bF - F) / (bF - wF).clip(1e-8) + 1).mean()}")
-    mid = self.config.pop_size // 2
+    mid = self.config.population // 2
     W_new = W
     W_new[:mid] = 1 - tricky_term[:mid]
     W_new[mid:] = 1 + tricky_term[mid:]
 
     ### Wrap food and Oscilation
-    iA, iB = np.random.choice(self.config.pop_size, 2, replace=False)
+    iA, iB = np.random.choice(self.config.population, 2, replace=False)
     XA, XB = X[iA][None], X[iB][None] # (1, D)
     Xb = X[0][None] # (1, D)
     p = np.tanh(np.abs(F - DF)) # (B, 1)
@@ -64,8 +64,8 @@ class SlimeMould:
     return X_new.clip(self.config.lb, self.config.ub), W_new, DF
 
   def solve(self) -> tuple:
-    X = np.random.normal(0, 1, (self.config.pop_size, self.config.D)).clip(self.config.lb, self.config.ub) # locations/population/slime mould
-    W = np.random.normal(0, 1, (self.config.pop_size, 1)) # weights
+    X = np.random.normal(0, 1, (self.config.population, self.config.D)).clip(self.config.lb, self.config.ub) # locations/population/slime mould
+    W = np.random.normal(0, 1, (self.config.population, 1)) # weights
 
     curr_best_id = np.argmax(self.__fitness(X), axis=0)[0]
     X_gstar = X[curr_best_id]

@@ -3,7 +3,7 @@ import numpy as np
 from typing import Dict, List
 
 from lib.config import Config
-from lib.algorithms.slime_mould_solve import SlimeMould # different slime mould 
+from lib.algorithms.slime_mould import SlimeMould # different slime mould 
 from lib.benchmarks.functions import rosenbrock, negative_Alpine
 from lib.solve import solve
 from lib.utils import generate_latex_table
@@ -28,7 +28,7 @@ config = Config(
         },
     minimizing=rosenbrock.minimizing,
     max_iters=MAX_I,
-    pop_size=0,  # will update based on experiment
+    population=0,  # will update based on experiment
     cooling_rate=0.8
 )
 
@@ -41,7 +41,7 @@ headers = ['Popul. Size'] + [f'$AVG VAL HERE$']
 experiment_name = 'test_SlimeMould'
 
 for pop_size in pop_sizes:
-    config = config.update(pop_size=pop_size)
+    config = config.update(population=pop_size)
     _, mean_result, std_dev_result, latex_result = solve(TRIALS, SlimeMould, config, log_to_file=True, experiment_name=experiment_name)
     results[pop_size].append(latex_result)    
     

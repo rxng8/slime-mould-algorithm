@@ -2,9 +2,11 @@ import numpy as np
 from typing import Dict, List
 
 from lib.config import Config
-from lib.algorithms import FireFly, Bat, PSO
+from lib.algorithms import FireFly, Bat, PSO, SlimeMould
 from lib.benchmarks.functions import rosenbrock
 from lib.solve import compare
+
+FUNCT = rosenbrock
 
 # Global variables (experiment setup)
 SEED = 1990
@@ -14,8 +16,9 @@ GLOBAL = {
     'lb': -2.0,
     'ub': 2.0,
     'MAX_I': 1000,
-    'funct': rosenbrock,
+    'funct': FUNCT,
     'min' :"Minimization",
+    'minimizing': FUNCT.minimizing,
     'stop_criterion': {
         'type': 'complex',
         'criteria': [
@@ -50,7 +53,13 @@ pso_config = Config(
     )
 pso_config = pso_config.update(GLOBAL)
 
-configs = [firefly_config, bat_config, pso_config]
-algos = [FireFly, Bat, PSO]
+slime_mould_config = Config(
+    max_iters=1000,
+    cooling_rate=0.8
+)
+slime_mould_config = slime_mould_config.update(GLOBAL)
+
+configs = [firefly_config, bat_config, pso_config, slime_mould_config]
+algos = [FireFly, Bat, PSO, SlimeMould]
 
 compare(algos, configs, populations, TRIALS, "Test_Compare")
