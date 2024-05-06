@@ -1,5 +1,6 @@
 
 # %%
+import os, sys
 import numpy as np
 
 from lib import Config
@@ -7,6 +8,10 @@ from lib.algorithms import SimulatedAnnealing as SA
 from lib.benchmarks import Rosenbrock
 from lib.solve import solve
 from lib.utils import generate_latex_table
+
+# Add the lib directory to the sys.path
+lib_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, lib_path)
 
 # Global variables (experiment setup)
 SEED = 1990 #123 #1234 #69

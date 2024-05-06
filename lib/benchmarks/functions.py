@@ -184,7 +184,7 @@ def easom(x: np.ndarray) -> np.ndarray:
       np.ndarray: (*B, 1)
   """
   x1, x2 = x.T
-  return - np.cos(x1) * np.cos(x2) * np.exp(- (x1 - np.pi)**2 - - (x2 - np.pi)**2)
+  return - np.cos(x1) * np.cos(x2) * np.exp(- (x1 - np.pi)**2 - (x2 - np.pi)**2)
 
 
 def fourpeak(x):
@@ -261,7 +261,8 @@ def plot_func(f, name:str="function") -> None:
 def main():
     parser = argparse.ArgumentParser(description="Plot benchmark functions.")
     parser.add_argument("--fn", help="Specify function to plot", choices=[
-        'neg_alpine', 'rosenbrock', 'ackley'])
+        'neg_alpine', 'rosenbrock', 'ackley', 'bukin', 'easom', 'bohachevsky', 
+        'bird', 'bartelsconn', 'booth', 'brent', 'beale', 'camel'])
     args = parser.parse_args()
     
     if args.fn == 'ackley':
@@ -270,6 +271,24 @@ def main():
         plot_func(negative_Alpine, "Negative Alpine Function")
     elif args.fn == 'rosenbrock':
         plot_func(rosenbrock, "Rosenbrock Function")
+    elif args.fn == 'bukin':
+        plot_func(bukin, "Bukin")
+    elif args.fn == 'easom':
+        plot_func(easom, "Easom")
+    elif args.fn == 'bohachevsky':
+        plot_func(bohachevsky, "Bohachevsky")
+    elif args.fn == 'bird':
+        plot_func(bird, "Bird")
+    elif args.fn == 'bartelsconn':
+        plot_func(bartelsconn, "Bartelsonn")
+    elif args.fn == 'booth':
+        plot_func(booth, 'Booth')
+    elif args.fn == 'brent':
+        plot_func(brent, 'Brent')
+    elif args.fn == 'beale':
+        plot_func(beale, 'Beale')
+    elif args.fn == 'camel':
+        plot_func(camel, 'Camel')
     else:
         print(f"Err 404: function {args.fn} not found.")
         

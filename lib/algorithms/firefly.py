@@ -24,14 +24,14 @@ class FireFly:
         
         # Minimization or Maximization Problem
         self.min = True if hasattr(config, "min") else False
-        
+
         # Stop Criterion
         self.stop: Callable = define_stop_criterion(config)
         
         # firefly
         self.fireflies = np.random.uniform(config.lb, config.ub, size=(config.population, config.D))
         self.intensity = self._get_fitness()
-        
+
         # Algorithm parameters
         self.beta0 = config.beta0
         self.gamma = config.gamma
