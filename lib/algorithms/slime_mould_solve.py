@@ -38,10 +38,11 @@ class SlimeMould:
   def step(self, t, X, W, DF):
     ### Approach food
     F = self.__fitness(X) # fitness of all slime mould
-    X, F = self.__sort_slime_mould(X, F)
-    bF = F[0][0] # scalar
-    wF = F[-1][0] # scalar
+    X, F = self.__sort_slime_mould(X, F) # SmellIndex
+    bF = F[0][0] # scalar (best fitness)
+    wF = F[-1][0] # scalar (worst fitness)
 
+    # Weight update W(SmellIndex)
     tricky_term = np.random.uniform() * np.log((bF - F) / (bF - wF).clip(1e-8) + 1)
     # print(f"[DEBUG] bF - F: {(bF - F).mean()}; bF - wF: {(bF - wF).mean()}; all: {((bF - F) / (bF - wF).clip(1e-8) + 1).mean()}")
     mid = self.config.pop_size // 2
@@ -66,17 +67,27 @@ class SlimeMould:
   def solve(self) -> tuple:
     X = np.random.normal(0, 1, (self.config.pop_size, self.config.D)).clip(self.config.lb, self.config.ub) # locations/population/slime mould
     W = np.random.normal(0, 1, (self.config.pop_size, 1)) # weights
-    DF = np.max(self.__fitness(X), 0)[0] # scalar
+    
+    curr_best_id = np.argmax(self.__fitness(X), axis=0)[0]
+    X_gstar = X[curr_best_id]
+    DF = self.__fitness(X_gstar) # scalar
 
-    #state = {'current_fitness': -DF}
+    state = {'current_fitness': -DF}
     for t in range(self.config.max_iters):
-      # if self.stop(state):
-      #   break
+      if self.stop(state):
+         break
       X, W, DF = self.step(t, X.copy(), W.copy(), DF)
-      #state.update({'current_fitness': -DF})
+      #print(t, X[0], self.__fitness(X)[0])
+      curr_best_id = np.argmax(self.__fitness(X), axis=0)[0]
+      X_curr_best = X[curr_best_id]
+      if self.__fitness(X_curr_best) > self.__fitness(X_gstar):
+        X_gstar = X_curr_best
       
-    id = np.argmax(self.__fitness(X), 0)[0]
-    return X[id], -DF
+      state.update({'current_fitness': -DF})
+    
+    F = self.__fitness(X_gstar)
+    # print(X_gstar, -F, -DF) DF is sometimes array (1,) sometimes scalar
+    return X_gstar, -F
 
 
 

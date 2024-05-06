@@ -36,10 +36,11 @@ class SlimeMould:
   def step(self, t, X, W, DF):
     ### Approach food
     F = self.__fitness(X) # fitness of all slime mould
-    X, F = self.__sort_slime_mould(X, F)
-    bF = F[0][0] # scalar
-    wF = F[-1][0] # scalar
+    X, F = self.__sort_slime_mould(X, F) # SmellIndex
+    bF = F[0][0] # scalar (best fitness)
+    wF = F[-1][0] # scalar (worst fitness)
 
+    # Weight update W(SmellIndex)
     tricky_term = np.random.uniform() * np.log((bF - F) / (bF - wF).clip(1e-8) + 1)
     # print(f"[DEBUG] bF - F: {(bF - F).mean()}; bF - wF: {(bF - wF).mean()}; all: {((bF - F) / (bF - wF).clip(1e-8) + 1).mean()}")
     mid = self.config.pop_size // 2
