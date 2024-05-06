@@ -10,8 +10,6 @@ class SlimeMould:
   def __init__(self, config: Config) -> None:
     self.config = config
     self.objective_fn = config.funct
-    self.stop: Callable = define_stop_criterion(config)
-
 
   def __fitness(self, X):
     # This algorithm is defaulted to maximizing the objective function
@@ -68,15 +66,11 @@ class SlimeMould:
     W = np.random.normal(0, 1, (self.config.pop_size, 1)) # weights
     DF = np.max(self.__fitness(X), 0)[0] # scalar
 
-    #state = {'current_fitness': -DF}
     for t in range(self.config.max_iters):
-      # if self.stop(state):
-      #   break
       X, W, DF = self.step(t, X.copy(), W.copy(), DF)
-      #state.update({'current_fitness': -DF})
-      
+      # if t % 10 == 0:
+        # id = np.argmax(self.__fitness(X), 0)[0]
+        # print(f"[Step {t}] X: {X[id]}, best: {self.__fitness(X[id])[0]}")
+
     id = np.argmax(self.__fitness(X), 0)[0]
-    return X[id], -DF
-
-
-
+    return X[id], -self.__fitness(X[id])[0] if self.config.minimizing else self.__fitness(X[id])[0]
