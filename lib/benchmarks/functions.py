@@ -296,7 +296,7 @@ def main():
     parser = argparse.ArgumentParser(description="Plot benchmark functions.")
     parser.add_argument("--fn", help="Specify function to plot", choices=[
         'neg_alpine', 'rosenbrock', 'ackley', 'bukin', 'easom', 'bohachevsky', 
-        'bird', 'bartelsconn', 'booth', 'brent', 'beale', 'camel'])
+        'bird', 'bartelsconn', 'booth', 'brent', 'beale', 'camel', 'fourpeak'])
     args = parser.parse_args()
     
     if args.fn == 'ackley':
@@ -323,6 +323,8 @@ def main():
         plot_func(beale, 'Beale')
     elif args.fn == 'camel':
         plot_func(camel, 'Camel')
+    elif args.fn == 'fourpeak':
+        plot_func(fourpeak, 'Fourpeak Function')
     else:
         print(f"Err 404: function {args.fn} not found.")
         

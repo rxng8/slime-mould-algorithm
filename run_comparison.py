@@ -5,7 +5,7 @@ from typing import Dict, List
 
 from lib.config import Config
 from lib.algorithms import FireFly, Bat, PSO, SlimeMould, SimulatedAnnealingSlimeMould
-from lib.benchmarks.functions import rosenbrock
+from lib.benchmarks.functions import ackley
 import lib.benchmarks.functions as function_module
 from inspect import getmembers, isfunction
 from lib.solve import compare
@@ -22,8 +22,8 @@ for (func_name, FUNCT) in getmembers(function_module, isfunction):
     TRIALS = 30
     GLOBAL = {
         'D': 2,
-        'lb': -2.0,
-        'ub': 2.0,
+        'lb': -35.0,
+        'ub': 35.0,
         'MAX_I': 1000,
         'funct': FUNCT,
         'min' :"Minimization",
@@ -39,7 +39,7 @@ for (func_name, FUNCT) in getmembers(function_module, isfunction):
 
     np.random.seed(SEED)
 
-    populations = [5, 10, 25, 50, 100]
+    populations = [5, 10, 25, 50, 100, 500]
 
     firefly_config = Config(gamma=1.0, alpha=0.5, beta0=1.0)
     firefly_config = firefly_config.update(GLOBAL)

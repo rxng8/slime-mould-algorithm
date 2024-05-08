@@ -1,6 +1,6 @@
 import logging, os, time
 from typing import Callable, List, Dict, Any
-
+import matplotlib.pyplot as plt
 from lib.utils import generate_latex_table
 
 # External
@@ -72,20 +72,36 @@ def solve(trials: int, Algo: Callable, config: Callable, log_to_file: bool = Fal
     
     result_string = f"${mean_fitness:.7g} \\pm {std_dev_fitness:.7g}$"
     # maybe also add time here so can be shown in table
-    return fitness_scores, mean_fitness, std_dev_fitness, result_string
+    return fitness_scores, mean_fitness, std_dev_fitness, result_string, avg_time_per_trial
 
 
-def compare(algos: List[Callable], configs: List[Callable], populations: List[int], trials: int, exp_name:str) -> None:
+def compare(algos: List[Callable], configs: List[Callable], populations: List[int], trials: int, exp_name:str, plot_time:bool = False) -> None:
     headers = ['Popul. Size'] + [f'{algo.__name__}' for algo, config in zip(algos, configs)]
 
     results = {size: [] for size in populations}
+    avg_trial_times: Dict[str, List[float]] = {algo.__name__: [] for algo in algos}
     
     for population in populations:
         for algo, config in zip(algos, configs):
             config = config.update(population=population)
-            _, mean_result, std_dev_result, latex_result = solve(trials, algo, config, experiment_name=exp_name)
+            _, mean_result, std_dev_result, latex_result, avg_time_per_trial = solve(trials, algo, config, experiment_name=exp_name)
             results[population].append(latex_result)
+            avg_trial_times[algo.__name__].append(avg_time_per_trial)
             print(f"Algorithm: {algo.__name__}, Population: {population}, Mean: {mean_result}, Std: {std_dev_result}")
     # Generate LaTeX table
     generate_latex_table(results, headers, exp_name)
     print(f"Comparison experiment: {exp_name} generated.")
+    
+    if plot_time:
+        # Plot the average trial times
+        plt.figure(figsize=(10, 6))
+        for algo_name, times in avg_trial_times.items():
+            plt.plot(populations, times, label=f"{algo_name}")
+
+        plt.xlabel('Population Size')
+        plt.ylabel('Average Time per Trial (seconds)')
+        plt.title('Average Time per Trial vs Population Size')
+        plt.legend(title='Algorithm')
+        plt.grid(True)
+        plt.savefig(f"{exp_name}_avg_time_per_trial.png")
+        plt.show()
