@@ -42,7 +42,7 @@ experiment_name = 'test_SlimeMould'
 
 for pop_size in pop_sizes:
     config = config.update(population=pop_size)
-    _, mean_result, std_dev_result, latex_result = solve(TRIALS, SlimeMould, config, log_to_file=True, experiment_name=experiment_name)
+    _, mean_result, std_dev_result, latex_result, _ = solve(TRIALS, SlimeMould, config, log_to_file=True, experiment_name=experiment_name)
     results[pop_size].append(latex_result)    
     
 generate_latex_table(results, headers, experiment_name)

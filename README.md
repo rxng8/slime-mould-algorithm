@@ -85,6 +85,7 @@ __Returns__:
 - `mean_fitness` (float): The mean fitness score across all trials.
 - std_dev_fitness (float): The standard deviation of the fitness scores across all trials.
 - `result_string` (str): A formatted string representing the mean and standard deviation of the fitness scores, suitable for presentation in scientific documents (e.g., LaTeX format).
+- `avg_duration_trial` (float): The average time taken for a trial
 
 __Example Usage__:
 ```python
@@ -188,7 +189,7 @@ for swarm_size in swarm_sizes:
     for hyper_params in hyperparam_list:
         config = config.update(hyper_params)
         # Run experiment
-        _, mean_result, std_dev_result, latex_result = solve(TRIALS, FireFly, config, log_to_file=True, experiment_name=experiment_name)
+        _, mean_result, std_dev_result, latex_result, _ = solve(TRIALS, FireFly, config, log_to_file=True, experiment_name=experiment_name)
         results[swarm_size].append(latex_result)
         
 generate_latex_table(results, headers, experiment_name)
