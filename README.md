@@ -4,33 +4,50 @@ Group member: Viet, Matthias, Faeze
 
 
 ## How to Setup an Experiment
+This library provides an environment to experiment with a selection methaheristic algorithms on 13 different benchmark functions.<br>
+Experiments can be setup as stand alone algorithm performance evaluation and hyperparameter fine-tuning on a benchmark function, 
+or as a performance comparision of multiple methaheuristic algorithms. 
 
-Create a `experinement.py` file with the following setup.
+### Create a `experinement.py` file with the following setup. (stand alone)
 
-### Imports and Global Variables
+#### Imports and Global Variables
 
-#### 1. Choose Algorithm and Benchmark
+##### 1. Choose Algorithm and Benchmark
 ```Python
 from lib.algorithms import SimulatedAnnealing
 from lib.benchmarks import Rosenbrock
 ```
-- Algorithm support for: `SlimeMold`, `SimulatedAnnealing`, `FireFly`, `DifferentialEvolution`
-- Benchmark support for: ...
+- Algorithm support for: `SlimeMold`, `SimulatedAnnealing`, `FireFly`, `DifferentialEvolution`, `SimulatedAnnealingSlimeMould`, `ParticleSwarm`, `FireFly`, `Bat`
+- Benchmark support for: `bohachevsky`, `bird`, `bartelsconn`, `booth`, `brent`, `beale`, `camel`, `bukin`, `cube`, `negative_Alpine`, `rosenbrock`, `easom`, `fourpeak`, `eggcrate`, `ackley`
 
-#### 2. Add default library support
+functions can be visualized through `lib\benchmarks\functions.py`.
+```
+functions.py -h
+usage: functions.py [-h]
+                    [--fn {neg_alpine,rosenbrock,ackley,bukin,easom,bohachevsky,bird,bartelsconn,booth,brent,beale,camel,fourpeak}]
+
+Plot benchmark functions.
+
+options:
+  -h, --help            show this help message and exit
+  --fn {neg_alpine,rosenbrock,ackley,bukin,easom,bohachevsky,bird,bartelsconn,booth,brent,beale,camel,fourpeak}       
+                        Specify function to plot
+```
+
+##### 2. Add default library support
 ```Python
 from lib import Config  # Custom Object holding parameters
 from lib.solve import solve # solve wrapper
 ```
 
-#### 3. Define Global Experiment Variables
+##### 3. Define Global Experiment Variables
 - `SEED`: Seed random function for deterministic outcome
 - `D`: Dimensions of search space of benchmark function
 - `LB`: Lower bound of benchmark function
 - `UB`: Upper bound of benchmark function
 - `TRIALS`: Number of random trials for experiment
 
-### Define Algorithm parameters
+#### Define Algorithm parameters
 Each algorithm has its own hyper-parameters. All required variables need to be added as field to `Config`. Also add the global environment setting to this object.
 
 ```Python
@@ -53,7 +70,7 @@ A `Config` stores all required parameters in order to be able to execute the alg
 In order to understand the setup for a specific algorithm please checkout the `example` folder with
 example projects for every methaheuristc algorithm available in this library.
 
-### Run an Algorithm using `solve`
+#### Run an Algorithm using `solve`
 In order to run experiment, the `solve` wrapper function from `lib/solve.py/` has to be called.
 
 __Parameters__:
@@ -87,10 +104,10 @@ fitness_scores, mean_fitness, std_dev_fitness, result_string = solve(
 )
 ```
 
-### Example Experiment
+#### Example Experiment
 In this example we are creating an experiment using the `FireFly` algorithm.
 
-#### 1. __Import algorithm and other functions__
+##### 1. __Import algorithm and other functions__
 ```python
 import numpy as np
 from typing import Dict, List
@@ -103,7 +120,7 @@ from lib.utils import generate_latex_table
 ```
 The code is performing an experiment on the `Rosenbrock` benchmark function provided in the library (Gloval Optima at `f(.) = 0`). The `Config` is a custom data structure stroing parameters required by the algorithm.
 
-#### 2. __Set Global Variables__
+##### 2. __Set Global Variables__
 ```python
 SEED = 1990
 D = 2
@@ -115,7 +132,7 @@ MAX_I = 1000
 np.random.seed(SEED)
 ```
 
-#### 3. __Populate the `Config`__
+##### 3. __Populate the `Config`__
 ```python
 config = Config(
     D=D,
@@ -138,7 +155,7 @@ config = Config(
 ```
 Note that the hyper-parameters are set to `0`. Since this experiment is running multiple settings, the initial value has to be set in will be overwritten in each experiment stage.
 
-#### 4. __Define hyper-parameters__
+##### 4. __Define hyper-parameters__
 ```python
 swarm_sizes = [5, 10, 25, 50, 100]
 # different hyper-parameters used
@@ -150,7 +167,7 @@ hyperparam_list = [
 ```
 As mentioned in __(3.)__, the set of used hyper-parameters has to be specified.
 
-#### 5. __Define Structure for LaTeX export__
+##### 5. __Define Structure for LaTeX export__
 ```python
 results = {size: [] for size in swarm_sizes}
 # Headers based on hyperparameter configurations
@@ -163,7 +180,7 @@ experiment_name = 'test_FireFly'
 In order to be able to create a LaTeX table storing the computed values, the `header` of the table and the bins for the `mean` and `standard deviation` of each experiment has to be defined.<br>
 An `experiment_name` is also needed to store loggings and the LaTeX table.
 
-#### 6. __Run Algorithm__:
+##### 6. __Run Algorithm__:
 ```python
 for swarm_size in swarm_sizes:
     config = config.update(population=swarm_size)
@@ -182,4 +199,61 @@ The algorithm is run for every specified `pop_size` in `pop_sizes`. For each dif
 
 The full code of this example can be found in `run_FireFly.py`.
 
+### Create a `compare.py` file with the following setup. (comparison analysis)
+The following section explains how to run or setup a `compare.py`. The example shown here is the `run_comparison.py`.
 
+
+#### Imports and Global Variables
+
+```python
+import numpy as np
+from typing import Dict, List
+from lib.config import Config
+from lib.algorithms import FireFly, Bat, PSO, SlimeMould, SimulatedAnnealingSlimeMould
+from lib.benchmarks.functions import ackley
+import lib.benchmarks.functions as function_module
+from inspect import getmembers, isfunction
+from lib.solve import compare
+```
+- Select the __algorithms__ and __benchmark function__ to work with
+- import the `compare` function from `lib.solve`
+
+```python
+SEED = 1990
+    TRIALS = 30
+    GLOBAL = {
+        'D': 2,
+        'lb': -35.0,
+        'ub': 35.0,
+        'MAX_I': 1000,
+        'funct': FUNCT,
+        'min' :"Minimization",
+        'minimizing': FUNCT.minimizing,
+        'stop_criterion': {
+            'type': 'complex',
+            'criteria': [
+                {'type': 'iterations', 'max_iterations': 1000},
+                {'type': 'fitness', 'target_fitness': 1e-6}
+            ]
+        }
+    }
+
+    np.random.seed(SEED)
+
+    populations = [5, 10, 25, 50, 100, 500]
+```
+Create a `GLOBAL` dictionay that holds all constant variables through all the algorithms compared against. In this example the population size is chhanged through multiple trials handled by the `solve()` wrapper. This is currently the only variable parameter in the comparison farmework.
+
+```python
+firefly_config = Config(gamma=1.0, alpha=0.5, beta0=1.0)
+firefly_config = firefly_config.update(GLOBAL)
+```
+Create a `Config` struct for each algorithm that holds it's specific parameters.
+
+```python
+configs = [firefly_config, bat_config, pso_config, slime_mould_config, simulated_annealing_slime_mould_config]
+algos = [FireFly, Bat, PSO, SlimeMould, SimulatedAnnealingSlimeMould]
+
+compare(algos, configs, populations, TRIALS, f"{func_name}")
+```
+Create lists of each algorithm and it's corresponding `Config` and call `compare`. This generates a folder of the compre experiment started, including a log file (or print to terminal) and a LaTex table with the results of the experiment. Additionally a time per trial plot can be generated through `config(plot_time=True)`.
